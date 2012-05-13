@@ -17,7 +17,6 @@ import java.util.Map;
 public class OsgiDefaultEndpoint extends DefaultEndpoint {
 
     private final BundleContext bundleContext;
-    private final ClassLoader applicationClassLoader;
     private final ClassLoader bundleClassLoader;
 
     private Map<String, String> props = Collections.emptyMap();
@@ -26,24 +25,23 @@ public class OsgiDefaultEndpoint extends DefaultEndpoint {
         super(endpointUri, component);
         this.bundleClassLoader = getClass().getClassLoader();
 
-        ClassLoader classLoader = component.getCamelContext().getApplicationContextClassLoader();
-        this.applicationClassLoader = classLoader;
+        ClassLoader appClassLoader = component.getCamelContext().getApplicationContextClassLoader();
 
         Bundle bundle;
-        if(!(classLoader instanceof BundleReference)) {
+        if(!(appClassLoader instanceof BundleReference)) {
             // try to resolve classloader through reflection if BundleReference has already been wrapped in the custom classloader
             // currently it works with spring-dm, aries, eclipse genimi, camel
             try {
-                Method method = classLoader.getClass().getMethod("getBundle");
-                bundle = (Bundle) method.invoke(classLoader);
+                Method method = appClassLoader.getClass().getMethod("getBundle");
+                bundle = (Bundle) method.invoke(appClassLoader);
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
                 throw new IllegalArgumentException(
-                        String.format("ClassLoader of CamelContext [%s] is not OSGi aware", classLoader));
+                        String.format("ClassLoader of CamelContext [%s] is not OSGi aware", appClassLoader));
             }
         } else {
-            bundle = BundleReference.class.cast(classLoader).getBundle();
+            bundle = BundleReference.class.cast(appClassLoader).getBundle();
         }
 
         bundleContext = bundle.getBundleContext();
@@ -79,10 +77,6 @@ public class OsgiDefaultEndpoint extends DefaultEndpoint {
 
     protected BundleContext getBundleContext() {
         return bundleContext;
-    }
-
-    protected ClassLoader getApplicationClassLoader() {
-        return applicationClassLoader;
     }
 
     protected ClassLoader getBundleClassLoader() {

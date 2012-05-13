@@ -17,6 +17,6 @@ public class MostActualLoadBalancer extends QueueLoadBalancer {
 
     @SuppressWarnings("unchecked")
     private Processor choose(Collection<?> processors) {
-        return (Processor) Collections.max((Collection<? extends Comparable>) processors);
+        return (Processor) Collections.min((Collection<? extends Comparable>) processors);
     }
 }
