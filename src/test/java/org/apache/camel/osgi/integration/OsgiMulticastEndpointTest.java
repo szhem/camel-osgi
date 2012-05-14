@@ -8,10 +8,14 @@ import org.ops4j.pax.exam.junit.Configuration;
 import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.ops4j.pax.exam.util.Filter;
+import org.ops4j.pax.tinybundles.core.TinyBundle;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
 
 import javax.inject.Inject;
 
+import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
@@ -34,6 +38,8 @@ public class OsgiMulticastEndpointTest extends OsgiIntegrationTest {
     public Option[] config() {
         return new Option[] {
             defaultOptions(),
+
+            mavenBundle("org.ops4j.pax.tinybundles", "tinybundles").versionAsInProject(),
 
             provision(
                 bundle()
@@ -65,7 +71,7 @@ public class OsgiMulticastEndpointTest extends OsgiIntegrationTest {
     }
 
     @Test
-    public void sendMessage() throws Exception {
+    public void testSendMessage() throws Exception {
         MockEndpoint consumer1 = consumer1Context.getEndpoint("mock:finish", MockEndpoint.class);
         consumer1.whenAnyExchangeReceived(new Processor() {
             @Override
@@ -97,4 +103,110 @@ public class OsgiMulticastEndpointTest extends OsgiIntegrationTest {
         MockEndpoint.assertIsSatisfied(consumer2Context);
     }
 
+    @Test
+    public void testRestartService() throws Exception {
+        MockEndpoint consumer1 = consumer1Context.getEndpoint("mock:finish", MockEndpoint.class);
+        consumer1.whenAnyExchangeReceived(new Processor() {
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                Message in = exchange.getIn();
+                in.setBody(in.getBody() + "-1");
+            }
+        });
+        consumer1.expectedBodiesReceivedInAnyOrder("1234567890-1", "1234567890-3");
+
+        MockEndpoint consumer2 = consumer2Context.getEndpoint("mock:finish", MockEndpoint.class);
+        consumer2.whenAnyExchangeReceived(new Processor() {
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                Message in = exchange.getIn();
+                in.setBody(in.getBody() + "-2");
+            }
+        });
+        consumer2.expectedBodiesReceivedInAnyOrder("1234567890-1", "1234567890-2", "1234567890-3");
+
+        MockEndpoint producer = producerContext.getEndpoint("mock:finish", MockEndpoint.class);
+        producer.expectedBodiesReceivedInAnyOrder(
+                "1234567890-1-1", "1234567890-1-2", "1234567890-2-2", "1234567890-3-1", "1234567890-3-2");
+
+        ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
+        producerTemplate.sendBody("direct:start", "1234567890-1");
+
+        consumer1Context.stopRoute("consumer1");
+        producerTemplate.sendBody("direct:start", "1234567890-2");
+
+        consumer1Context.startRoute("consumer1");
+        producerTemplate.sendBody("direct:start", "1234567890-3");
+
+        MockEndpoint.assertIsSatisfied(producerContext);
+        MockEndpoint.assertIsSatisfied(consumer1Context);
+        MockEndpoint.assertIsSatisfied(consumer2Context);
+    }
+
+    @Test
+    public void testInstallUninstallBundle() throws Exception {
+        MockEndpoint consumer1 = consumer1Context.getEndpoint("mock:finish", MockEndpoint.class);
+        consumer1.whenAnyExchangeReceived(new Processor() {
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                Message in = exchange.getIn();
+                in.setBody(in.getBody() + "-1");
+            }
+        });
+        consumer1.expectedBodiesReceivedInAnyOrder("1234567890-1", "1234567890-2", "1234567890-3");
+
+        MockEndpoint consumer2 = consumer2Context.getEndpoint("mock:finish", MockEndpoint.class);
+        consumer2.whenAnyExchangeReceived(new Processor() {
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                Message in = exchange.getIn();
+                in.setBody(in.getBody() + "-2");
+            }
+        });
+        consumer2.expectedBodiesReceivedInAnyOrder("1234567890-1", "1234567890-2", "1234567890-3");
+
+        MockEndpoint producer = producerContext.getEndpoint("mock:finish", MockEndpoint.class);
+        producer.expectedBodiesReceivedInAnyOrder(
+                "1234567890-1-1", "1234567890-1-2",
+                "1234567890-2-1", "1234567890-2-2", "1234567890-2-3",
+                "1234567890-3-1", "1234567890-3-2");
+
+        ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
+        producerTemplate.sendBody("direct:start", "1234567890-1");
+
+        Bundle bundle = installBundle();
+        bundle.start();
+
+        CamelContext consumer3Context = getOsgiService(CamelContext.class, "(camel.context.symbolicname=" + getClass().getName() + ".consumer3)");
+        MockEndpoint consumer3 = consumer3Context.getEndpoint("mock:finish", MockEndpoint.class);
+        consumer3.expectedBodiesReceived("1234567890-2");
+        consumer3.whenAnyExchangeReceived(new Processor() {
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                Message in = exchange.getIn();
+                in.setBody(in.getBody() + "-3");
+            }
+        });
+        producerTemplate.sendBody("direct:start", "1234567890-2");
+
+        bundle.stop();
+        producerTemplate.sendBody("direct:start", "1234567890-3");
+
+        MockEndpoint.assertIsSatisfied(producerContext);
+        MockEndpoint.assertIsSatisfied(consumer1Context);
+        MockEndpoint.assertIsSatisfied(consumer2Context);
+        MockEndpoint.assertIsSatisfied(consumer3Context);
+    }
+
+    private Bundle installBundle() throws BundleException {
+        TinyBundle tinyBundle = bundle()
+            .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer3.xml"))
+            .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer3")
+            .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer3")
+            .set(Constants.BUNDLE_VERSION, "1.0.0")
+            .removeHeader(Constants.IMPORT_PACKAGE)
+            .removeHeader(Constants.EXPORT_PACKAGE);
+
+        return bundleContext.installBundle("location", tinyBundle.build());
+    }
 }

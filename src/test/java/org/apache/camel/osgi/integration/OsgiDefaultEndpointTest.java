@@ -28,8 +28,8 @@ public class OsgiDefaultEndpointTest extends OsgiIntegrationTest {
     private CamelContext producerContext;
 
     @Inject
-    @Filter("(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiDefaultEndpointTest.consumers1)")
-    private CamelContext consumersContext;
+    @Filter("(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiDefaultEndpointTest.consumer1)")
+    private CamelContext consumer1Context;
 
     @Configuration
     public Option[] config() {
@@ -40,9 +40,9 @@ public class OsgiDefaultEndpointTest extends OsgiIntegrationTest {
 
             provision(
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumers1.xml"))
-                    .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumers1")
-                    .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumers1")
+                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer1.xml"))
+                    .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer1")
+                    .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer1")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
                     .removeHeader(Constants.IMPORT_PACKAGE)
                     .removeHeader(Constants.EXPORT_PACKAGE)
@@ -62,80 +62,54 @@ public class OsgiDefaultEndpointTest extends OsgiIntegrationTest {
     @Test
     public void testSendMessage() throws Exception {
         for(int i = 0; i < 9; i++) {
-            MockEndpoint finish = consumersContext.getEndpoint("mock:finish" + i, MockEndpoint.class);
+            MockEndpoint finish = consumer1Context.getEndpoint("mock:finish" + i, MockEndpoint.class);
             finish.expectedMessageCount(0);
         }
 
-        MockEndpoint finish9 = consumersContext.getEndpoint("mock:finish9", MockEndpoint.class);
+        MockEndpoint finish9 = consumer1Context.getEndpoint("mock:finish9", MockEndpoint.class);
         finish9.expectedBodiesReceived("1234567890-1");
 
         ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
         producerTemplate.sendBody("direct:start", "1234567890-1");
 
-        MockEndpoint.assertIsSatisfied(consumersContext);
+        MockEndpoint.assertIsSatisfied(consumer1Context);
     }
 
     @Test
     public void testRestartService() throws Exception {
         for(int i = 0; i < 8; i++) {
-            MockEndpoint finish = consumersContext.getEndpoint("mock:finish" + i, MockEndpoint.class);
+            MockEndpoint finish = consumer1Context.getEndpoint("mock:finish" + i, MockEndpoint.class);
             finish.expectedMessageCount(0);
         }
 
-        MockEndpoint finish8 = consumersContext.getEndpoint("mock:finish8", MockEndpoint.class);
+        MockEndpoint finish8 = consumer1Context.getEndpoint("mock:finish8", MockEndpoint.class);
         finish8.expectedBodiesReceived("1234567890-2");
 
-        MockEndpoint finish9 = consumersContext.getEndpoint("mock:finish9", MockEndpoint.class);
+        MockEndpoint finish9 = consumer1Context.getEndpoint("mock:finish9", MockEndpoint.class);
         finish9.expectedBodiesReceived("1234567890-1", "1234567890-3");
 
         ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
         producerTemplate.sendBody("direct:start", "1234567890-1");
 
         // stop service, so finish8 will receive the message
-        consumersContext.stopRoute("route9");
+        consumer1Context.stopRoute("route9");
         producerTemplate.sendBody("direct:start", "1234567890-2");
 
         // start service, so finish9 will receive the message again
-        consumersContext.startRoute("route9");
+        consumer1Context.startRoute("route9");
         producerTemplate.sendBody("direct:start", "1234567890-3");
 
-        MockEndpoint.assertIsSatisfied(consumersContext);
+        MockEndpoint.assertIsSatisfied(consumer1Context);
     }
 
     @Test
-    public void testInstallBundle() throws Exception {
-        for(int i = 0; i < 9; i++) {
-            MockEndpoint finish = consumersContext.getEndpoint("mock:finish" + i, MockEndpoint.class);
-            finish.expectedMessageCount(0);
-        }
-
-        MockEndpoint finish9 = consumersContext.getEndpoint("mock:finish9", MockEndpoint.class);
-        finish9.expectedBodiesReceived("1234567890-1");
-
-        ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
-        producerTemplate.sendBody("direct:start", "1234567890-1");
-
-        // add new bundle with service that has the highest ranking, so it has to receive the next sent message
-        Bundle bundle = installBundle();
-        bundle.start();
-
-        CamelContext consumers2Context = getOsgiService(CamelContext.class, "(camel.context.symbolicname=" + getClass().getName() + ".consumers2)");
-        MockEndpoint finish100 = consumers2Context.getEndpoint("mock:finish100", MockEndpoint.class);
-        finish100.expectedBodiesReceived("1234567890-2");
-        producerTemplate.sendBody("direct:start", "1234567890-2");
-
-        MockEndpoint.assertIsSatisfied(consumersContext);
-        MockEndpoint.assertIsSatisfied(consumers2Context);
-    }
-
-    @Test
-    public void testUninstallBundle() throws Exception {
+    public void testInstallUninstallBundle() throws Exception {
         for(int i = 0; i < 8; i++) {
-            MockEndpoint finish = consumersContext.getEndpoint("mock:finish" + i, MockEndpoint.class);
+            MockEndpoint finish = consumer1Context.getEndpoint("mock:finish" + i, MockEndpoint.class);
             finish.expectedMessageCount(0);
         }
 
-        MockEndpoint finish9 = consumersContext.getEndpoint("mock:finish9", MockEndpoint.class);
+        MockEndpoint finish9 = consumer1Context.getEndpoint("mock:finish9", MockEndpoint.class);
         finish9.expectedBodiesReceived("1234567890-1", "1234567890-3");
 
         ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
@@ -145,8 +119,8 @@ public class OsgiDefaultEndpointTest extends OsgiIntegrationTest {
         Bundle bundle = installBundle();
         bundle.start();
 
-        CamelContext consumers2Context = getOsgiService(CamelContext.class, "(camel.context.symbolicname=" + getClass().getName() + ".consumers2)");
-        MockEndpoint finish100 = consumers2Context.getEndpoint("mock:finish100", MockEndpoint.class);
+        CamelContext consumer2Context = getOsgiService(CamelContext.class, "(camel.context.symbolicname=" + getClass().getName() + ".consumer2)");
+        MockEndpoint finish100 = consumer2Context.getEndpoint("mock:finish100", MockEndpoint.class);
         finish100.expectedBodiesReceived("1234567890-2");
         producerTemplate.sendBody("direct:start", "1234567890-2");
 
@@ -154,15 +128,15 @@ public class OsgiDefaultEndpointTest extends OsgiIntegrationTest {
         bundle.uninstall();
         producerTemplate.sendBody("direct:start", "1234567890-3");
 
-        MockEndpoint.assertIsSatisfied(consumersContext);
-        MockEndpoint.assertIsSatisfied(consumers2Context);
+        MockEndpoint.assertIsSatisfied(consumer1Context);
+        MockEndpoint.assertIsSatisfied(consumer2Context);
     }
 
     private Bundle installBundle() throws BundleException {
         TinyBundle tinyBundle = bundle()
-            .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumers2.xml"))
-            .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumers2")
-            .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumers2")
+            .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer2.xml"))
+            .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer2")
+            .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer2")
             .set(Constants.BUNDLE_VERSION, "1.0.0")
             .removeHeader(Constants.IMPORT_PACKAGE)
             .removeHeader(Constants.EXPORT_PACKAGE);

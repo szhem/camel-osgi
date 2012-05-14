@@ -24,7 +24,6 @@ public class BundleDelegatingClassLoader extends ClassLoader {
             throw new IllegalArgumentException("bundle: null");
         }
         this.bundle = bundle;
-
         this.classLoader = classLoader;
     }
 
@@ -42,7 +41,11 @@ public class BundleDelegatingClassLoader extends ClassLoader {
 
     @SuppressWarnings("unchecked")
     protected Enumeration findResources(String name) throws IOException {
-        return bundle.getResources(name);
+        Enumeration resources = bundle.getResources(name);
+        if (classLoader != null && (resources == null || !resources.hasMoreElements())) {
+            resources = classLoader.getResources(name);
+        }
+        return resources;
     }
 
     protected Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {

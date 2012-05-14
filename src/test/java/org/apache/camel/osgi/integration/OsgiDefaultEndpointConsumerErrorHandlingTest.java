@@ -74,7 +74,7 @@ public class OsgiDefaultEndpointConsumerErrorHandlingTest extends OsgiIntegratio
         ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
         try {
             producerTemplate.sendBody("direct:start", "1234567890");
-            fail();
+            fail("CamelExecutionException expected");
         } catch (CamelExecutionException e) {
             assertEquals("TestException!!!", e.getCause().getMessage());
         }

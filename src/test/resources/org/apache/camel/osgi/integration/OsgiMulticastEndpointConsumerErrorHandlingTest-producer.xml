@@ -15,7 +15,30 @@
 
         <route>
             <from uri="direct:start" />
+            <to uri="osgi:multicast:consumer?aggregationStrategy=#aggregationStrategy" />
+            <split>
+                <simple>${property.CamelGroupedExchange}</simple>
+                <to uri="mock:reply" />
+                <setBody>
+                    <simple>${body.getIn().getBody()}</simple>
+                </setBody>
+                <to uri="mock:finish" />
+            </split>
+        </route>
+        <route>
+            <from uri="direct:startStopOnException" />
             <to uri="osgi:multicast:consumer?aggregationStrategy=#aggregationStrategy&amp;stopOnException=true" />
+            <split>
+                <simple>${property.CamelGroupedExchange}</simple>
+                <setBody>
+                    <simple>${body.getIn().getBody()}</simple>
+                </setBody>
+                <to uri="mock:finish" />
+            </split>
+        </route>
+        <route>
+            <from uri="direct:startStopOnExceptionParallel" />
+            <to uri="osgi:multicast:consumer?aggregationStrategy=#aggregationStrategy&amp;stopOnException=true&amp;parallelProcessing=true" />
             <split>
                 <simple>${property.CamelGroupedExchange}</simple>
                 <setBody>

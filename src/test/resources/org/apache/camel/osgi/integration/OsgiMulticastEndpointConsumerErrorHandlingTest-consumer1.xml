@@ -8,6 +8,11 @@
     ">
 
     <camelContext xmlns="http://camel.apache.org/schema/blueprint">
+        <onException>
+            <exception>java.lang.Exception</exception>
+            <redeliveryPolicy maximumRedeliveries="3"/>
+            <to uri="mock:exception"/>
+        </onException>
         <route>
             <from uri="osgi:consumer" />
             <to uri="mock:finish" />

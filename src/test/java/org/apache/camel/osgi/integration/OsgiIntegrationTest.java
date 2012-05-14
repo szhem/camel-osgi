@@ -7,11 +7,9 @@ import org.openengsb.labs.paxexam.karaf.options.LogLevelOption;
 import org.ops4j.pax.exam.MavenUtils;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.TestProbeBuilder;
-import org.ops4j.pax.exam.junit.ExamReactorStrategy;
 import org.ops4j.pax.exam.junit.JUnit4TestRunner;
 import org.ops4j.pax.exam.junit.ProbeBuilder;
 import org.ops4j.pax.exam.options.CompositeOption;
-import org.ops4j.pax.exam.spi.reactors.AllConfinedStagedReactorFactory;
 import org.osgi.framework.*;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -19,7 +17,6 @@ import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
-import java.util.*;
 
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.*;
 import static org.ops4j.pax.exam.CoreOptions.*;
@@ -103,22 +100,6 @@ public abstract class OsgiIntegrationTest {
         throw new RuntimeException("Bundle " + symbolicName + " does not exist");
     }
 
-    /*
-* Explode the dictionary into a ,-delimited list of key=value pairs
-*/
-    private static String explode(Dictionary dictionary) {
-        Enumeration keys = dictionary.keys();
-        StringBuffer result = new StringBuffer();
-        while (keys.hasMoreElements()) {
-            Object key = keys.nextElement();
-            result.append(String.format("%s=%s", key, dictionary.get(key)));
-            if (keys.hasMoreElements()) {
-                result.append(", ");
-            }
-        }
-        return result.toString();
-    }
-
     protected <T> T getOsgiService(Class<T> type, long timeout) {
         return getOsgiService(type, null, timeout);
     }
@@ -151,17 +132,6 @@ public abstract class OsgiIntegrationTest {
             // This is buggy, as the service reference may change i think
             Object svc = type.cast(tracker.waitForService(timeout));
             if (svc == null) {
-                Dictionary dic = bundleContext.getBundle().getHeaders();
-                System.err.println("Test bundle headers: " + explode(dic));
-
-                for (ServiceReference ref : asCollection(bundleContext.getAllServiceReferences(null, null))) {
-                    System.err.println("ServiceReference: " + ref);
-                }
-
-                for (ServiceReference ref : asCollection(bundleContext.getAllServiceReferences(null, flt))) {
-                    System.err.println("Filtered ServiceReference: " + ref);
-                }
-
                 throw new RuntimeException("Gave up waiting for service " + flt);
             }
             return type.cast(svc);
@@ -172,16 +142,6 @@ public abstract class OsgiIntegrationTest {
         }
     }
 
-
-    /**
-    * Provides an iterable collection of references, even if the original array is null
-    */
-    private static Collection<ServiceReference> asCollection(ServiceReference[] references) {
-        return references != null ? Arrays.asList(references) : Collections.<ServiceReference>emptyList();
-    }
-
-
-
     public Option defaultOptions() {
         return new CompositeOption() {
             @Override
@@ -189,9 +149,8 @@ public abstract class OsgiIntegrationTest {
                 return new Option[] {
                     karafDistributionConfiguration()
                         .frameworkUrl(maven("org.apache.karaf", "apache-karaf").versionAsInProject().type("tar.gz"))
-                        .karafVersion("2.2.7").name("Apache Karaf")
+                        .karafVersion(MavenUtils.getArtifactVersion("org.apache.karaf", "apache-karaf")).name("Apache Karaf")
                         .unpackDirectory(new File("target/paxexam/unpack/")),
-                    keepRuntimeFolder(),
                     logLevel(LogLevelOption.LogLevel.ERROR),
 
                     scanFeatures(

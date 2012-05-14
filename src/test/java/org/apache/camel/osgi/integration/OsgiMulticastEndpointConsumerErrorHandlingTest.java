@@ -12,6 +12,8 @@ import org.osgi.framework.Constants;
 
 import javax.inject.Inject;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
@@ -65,16 +67,16 @@ public class OsgiMulticastEndpointConsumerErrorHandlingTest extends OsgiIntegrat
     }
 
     @Test
-    public void sendMessage() throws Exception {
+    public void testHandleException() throws Exception {
         MockEndpoint consumer1 = consumer1Context.getEndpoint("mock:finish", MockEndpoint.class);
         consumer1.whenAnyExchangeReceived(new Processor() {
             @Override
             public void process(Exchange exchange) throws Exception {
-                Message in = exchange.getIn();
-                in.setBody(in.getBody() + "-1");
+                throw new RuntimeException("TestException-1");
             }
         });
-        consumer1.expectedBodiesReceived("1234567890");
+        consumer1.expectedMessageCount(4);
+        consumer1.allMessages().body().isEqualTo("1234567890");
 
         MockEndpoint consumer2 = consumer2Context.getEndpoint("mock:finish", MockEndpoint.class);
         consumer2.whenAnyExchangeReceived(new Processor() {
@@ -86,8 +88,20 @@ public class OsgiMulticastEndpointConsumerErrorHandlingTest extends OsgiIntegrat
         });
         consumer2.expectedBodiesReceived("1234567890");
 
+        MockEndpoint exception1 = consumer1Context.getEndpoint("mock:exception", MockEndpoint.class);
+        exception1.expectedMessageCount(4);
+        exception1.expectedBodiesReceived("1234567890");
+
+        MockEndpoint exception2 = consumer2Context.getEndpoint("mock:exception", MockEndpoint.class);
+        exception2.expectedMessageCount(0);
+
+        MockEndpoint reply = producerContext.getEndpoint("mock:reply", MockEndpoint.class);
+        reply.expectedMessageCount(2);
+        reply.allMessages().predicate()
+            .simple("${body.getException()} != null || ${body.getIn().getBody()} == '1234567890-2'", Boolean.class);
+
         MockEndpoint producer = producerContext.getEndpoint("mock:finish", MockEndpoint.class);
-        producer.expectedBodiesReceivedInAnyOrder("1234567890-1", "1234567890-2");
+        producer.expectedBodiesReceivedInAnyOrder("1234567890", "1234567890-2");
 
         ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
         producerTemplate.sendBody("direct:start", "1234567890");
@@ -97,4 +111,91 @@ public class OsgiMulticastEndpointConsumerErrorHandlingTest extends OsgiIntegrat
         MockEndpoint.assertIsSatisfied(consumer2Context);
     }
 
+    @Test
+    public void testHandleExceptionStopOnException() throws Exception {
+        MockEndpoint consumer1 = consumer1Context.getEndpoint("mock:finish", MockEndpoint.class);
+        consumer1.whenAnyExchangeReceived(new Processor() {
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                throw new RuntimeException("TestException-1");
+            }
+        });
+        consumer1.expectedMessageCount(4);
+        consumer1.allMessages().body().isEqualTo("1234567890");
+
+        MockEndpoint exception1 = consumer1Context.getEndpoint("mock:exception", MockEndpoint.class);
+        exception1.expectedMessageCount(4);
+        exception1.expectedBodiesReceived("1234567890");
+
+        MockEndpoint exception2 = consumer2Context.getEndpoint("mock:exception", MockEndpoint.class);
+        exception2.expectedMessageCount(0);
+
+        MockEndpoint producer = producerContext.getEndpoint("mock:finish", MockEndpoint.class);
+        producer.expectedMessageCount(0);
+
+        ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
+        try {
+            producerTemplate.sendBody("direct:startStopOnException", "1234567890");
+            fail("CamelExecutionException expected");
+        } catch (CamelExecutionException e) {
+            Throwable cause = e.getCause();
+            while (cause.getClass() != RuntimeException.class) {
+                cause = cause.getCause();
+            }
+            assertEquals("TestException-1", cause.getMessage());
+        }
+
+        MockEndpoint.assertIsSatisfied(producerContext);
+        MockEndpoint.assertIsSatisfied(consumer1Context);
+        MockEndpoint.assertIsSatisfied(consumer2Context);
+    }
+
+    @Test
+    public void testHandleExceptionStopOnExceptionParallel() throws Exception {
+        MockEndpoint consumer1 = consumer1Context.getEndpoint("mock:finish", MockEndpoint.class);
+        consumer1.whenAnyExchangeReceived(new Processor() {
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                throw new RuntimeException("TestException-1");
+            }
+        });
+        consumer1.expectedMessageCount(4);
+        consumer1.allMessages().body().isEqualTo("1234567890");
+
+        MockEndpoint consumer2 = consumer2Context.getEndpoint("mock:finish", MockEndpoint.class);
+        consumer2.whenAnyExchangeReceived(new Processor() {
+            @Override
+            public void process(Exchange exchange) throws Exception {
+                Message in = exchange.getIn();
+                in.setBody(in.getBody() + "-2");
+            }
+        });
+        consumer2.expectedBodiesReceived("1234567890");
+
+        MockEndpoint exception1 = consumer1Context.getEndpoint("mock:exception", MockEndpoint.class);
+        exception1.expectedMessageCount(4);
+        exception1.expectedBodiesReceived("1234567890");
+
+        MockEndpoint exception2 = consumer2Context.getEndpoint("mock:exception", MockEndpoint.class);
+        exception2.expectedMessageCount(0);
+
+        MockEndpoint producer = producerContext.getEndpoint("mock:finish", MockEndpoint.class);
+        producer.expectedMessageCount(0);
+
+        ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
+        try {
+            producerTemplate.sendBody("direct:startStopOnExceptionParallel", "1234567890");
+            fail("CamelExecutionException expected");
+        } catch (CamelExecutionException e) {
+            Throwable cause = e.getCause();
+            while (cause.getClass() != RuntimeException.class) {
+                cause = cause.getCause();
+            }
+            assertEquals("TestException-1", cause.getMessage());
+        }
+
+        MockEndpoint.assertIsSatisfied(producerContext);
+        MockEndpoint.assertIsSatisfied(consumer1Context);
+        MockEndpoint.assertIsSatisfied(consumer2Context);
+    }
 }

@@ -5,6 +5,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.impl.DefaultProducer;
 import org.apache.camel.osgi.filter.Filters;
 import org.apache.camel.osgi.util.OsgiServiceList;
+import org.apache.camel.util.ServiceHelper;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
@@ -50,12 +51,20 @@ public class OsgiDefaultProducer extends DefaultProducer {
         if(processor == null) {
             processor = createProcessor();
         }
+        ServiceHelper.startService(processor);
     }
 
     @Override
     protected void doStop() throws Exception {
+        ServiceHelper.stopService(processor);
         services.stopTraking();
         super.doStop();
+    }
+
+    @Override
+    protected void doShutdown() throws Exception {
+        ServiceHelper.stopAndShutdownService(processor);
+        super.doShutdown();
     }
 }
 
