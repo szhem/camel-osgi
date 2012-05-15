@@ -36,7 +36,7 @@ public class OsgiDefaultProducer extends DefaultProducer {
     }
 
     protected Processor createProcessor() {
-        return new MostActualLoadBalancer() {
+        return new OsgiDefaultLoadBalancer() {
             @Override
             public List<Processor> getProcessors() {
                 return services;

@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class MostActualLoadBalancer extends QueueLoadBalancer {
+public class OsgiDefaultLoadBalancer extends QueueLoadBalancer {
 
     @Override
     protected synchronized Processor chooseProcessor(List<Processor> processors, Exchange exchange) {

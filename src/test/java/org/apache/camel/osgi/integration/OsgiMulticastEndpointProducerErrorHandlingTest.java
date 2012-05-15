@@ -18,18 +18,18 @@ import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
-public class OsgiMulticastEndpointConsumerErrorHandlingTest extends OsgiIntegrationTest {
+public class OsgiMulticastEndpointProducerErrorHandlingTest extends OsgiIntegrationTest {
 
     @Inject
-    @Filter(value = "(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiMulticastEndpointConsumerErrorHandlingTest.producer)")
+    @Filter(value = "(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiMulticastEndpointProducerErrorHandlingTest.producer)")
     private CamelContext producerContext;
 
     @Inject
-    @Filter("(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiMulticastEndpointConsumerErrorHandlingTest.consumer1)")
+    @Filter("(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiMulticastEndpointProducerErrorHandlingTest.consumer1)")
     private CamelContext consumer1Context;
 
     @Inject
-    @Filter("(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiMulticastEndpointConsumerErrorHandlingTest.consumer2)")
+    @Filter("(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiMulticastEndpointProducerErrorHandlingTest.consumer2)")
     private CamelContext consumer2Context;
 
     @Configuration
@@ -86,21 +86,16 @@ public class OsgiMulticastEndpointConsumerErrorHandlingTest extends OsgiIntegrat
                 in.setBody(in.getBody() + "-2");
             }
         });
+        consumer2.expectedMessageCount(1);
         consumer2.expectedBodiesReceived("1234567890");
 
-        MockEndpoint exception1 = consumer1Context.getEndpoint("mock:exception", MockEndpoint.class);
-        exception1.expectedMessageCount(4);
-        exception1.expectedBodiesReceived("1234567890");
+        MockEndpoint exception = producerContext.getEndpoint("mock:exception", MockEndpoint.class);
+        exception.expectedMessageCount(1);
+        exception.expectedBodiesReceived("1234567890");
 
-        MockEndpoint exception2 = consumer2Context.getEndpoint("mock:exception", MockEndpoint.class);
-        exception2.expectedMessageCount(0);
-
-        MockEndpoint reply = producerContext.getEndpoint("mock:reply", MockEndpoint.class);
-        reply.expectedMessageCount(2);
-        reply.allMessages().simple("${body.getException()} != null || ${body.getIn().getBody()} == '1234567890-2'", Boolean.class);
-
-        MockEndpoint producer = producerContext.getEndpoint("mock:finish", MockEndpoint.class);
-        producer.expectedBodiesReceivedInAnyOrder("1234567890", "1234567890-2");
+        MockEndpoint finish = producerContext.getEndpoint("mock:finish", MockEndpoint.class);
+        finish.expectedMessageCount(2);
+        finish.expectedBodiesReceivedInAnyOrder("1234567890", "1234567890-2");
 
         ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
         producerTemplate.sendBody("direct:start", "1234567890");
@@ -122,15 +117,12 @@ public class OsgiMulticastEndpointConsumerErrorHandlingTest extends OsgiIntegrat
         consumer1.expectedMessageCount(4);
         consumer1.allMessages().body().isEqualTo("1234567890");
 
-        MockEndpoint exception1 = consumer1Context.getEndpoint("mock:exception", MockEndpoint.class);
-        exception1.expectedMessageCount(4);
-        exception1.expectedBodiesReceived("1234567890");
+        MockEndpoint exception = producerContext.getEndpoint("mock:exception", MockEndpoint.class);
+        exception.expectedMessageCount(1);
+        exception.expectedBodiesReceived("1234567890");
 
-        MockEndpoint exception2 = consumer2Context.getEndpoint("mock:exception", MockEndpoint.class);
-        exception2.expectedMessageCount(0);
-
-        MockEndpoint producer = producerContext.getEndpoint("mock:finish", MockEndpoint.class);
-        producer.expectedMessageCount(0);
+        MockEndpoint finish = producerContext.getEndpoint("mock:finish", MockEndpoint.class);
+        finish.expectedMessageCount(0);
 
         ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
         try {
@@ -150,7 +142,7 @@ public class OsgiMulticastEndpointConsumerErrorHandlingTest extends OsgiIntegrat
     }
 
     @Test
-    public void testHandleExceptionStopOnExceptionParallel() throws Exception {
+    public void testHandleExceptionParallel() throws Exception {
         MockEndpoint consumer1 = consumer1Context.getEndpoint("mock:finish", MockEndpoint.class);
         consumer1.whenAnyExchangeReceived(new Processor() {
             @Override
@@ -169,17 +161,15 @@ public class OsgiMulticastEndpointConsumerErrorHandlingTest extends OsgiIntegrat
                 in.setBody(in.getBody() + "-2");
             }
         });
+        consumer2.expectedMessageCount(1);
         consumer2.expectedBodiesReceived("1234567890");
 
-        MockEndpoint exception1 = consumer1Context.getEndpoint("mock:exception", MockEndpoint.class);
-        exception1.expectedMessageCount(4);
-        exception1.expectedBodiesReceived("1234567890");
+        MockEndpoint exception = producerContext.getEndpoint("mock:exception", MockEndpoint.class);
+        exception.expectedMessageCount(1);
+        exception.expectedBodiesReceived("1234567890");
 
-        MockEndpoint exception2 = consumer2Context.getEndpoint("mock:exception", MockEndpoint.class);
-        exception2.expectedMessageCount(0);
-
-        MockEndpoint producer = producerContext.getEndpoint("mock:finish", MockEndpoint.class);
-        producer.expectedMessageCount(0);
+        MockEndpoint finish = producerContext.getEndpoint("mock:finish", MockEndpoint.class);
+        finish.expectedMessageCount(0);
 
         ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
         try {
@@ -197,4 +187,5 @@ public class OsgiMulticastEndpointConsumerErrorHandlingTest extends OsgiIntegrat
         MockEndpoint.assertIsSatisfied(consumer1Context);
         MockEndpoint.assertIsSatisfied(consumer2Context);
     }
+
 }

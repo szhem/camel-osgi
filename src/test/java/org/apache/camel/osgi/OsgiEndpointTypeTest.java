@@ -1,6 +1,7 @@
 package org.apache.camel.osgi;
 
 import org.apache.camel.CamelContext;
+import org.apache.camel.osgi.util.BundleDelegatingClassLoader;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 
@@ -27,6 +28,9 @@ public class OsgiEndpointTypeTest {
 
         endpointType = OsgiEndpointType.fromPath("roundrobin:test");
         assertThat(endpointType, sameInstance(OsgiEndpointType.ROUNDROBIN));
+
+        endpointType = OsgiEndpointType.fromPath("random:test");
+        assertThat(endpointType, sameInstance(OsgiEndpointType.RANDOM));
     }
 
     @Test
@@ -35,6 +39,7 @@ public class OsgiEndpointTypeTest {
         assertThat(OsgiEndpointType.DEFAULT.getName("default:test"), equalTo("test"));
         assertThat(OsgiEndpointType.MULTICAST.getName("multicast:test"), equalTo("test"));
         assertThat(OsgiEndpointType.ROUNDROBIN.getName("roundrobin:test"), equalTo("test"));
+        assertThat(OsgiEndpointType.RANDOM.getName("random:test"), equalTo("test"));
     }
 
     @Test
@@ -53,6 +58,7 @@ public class OsgiEndpointTypeTest {
         assertThat(OsgiEndpointType.DEFAULT.createEndpoint("osgi:unknown:test", comp), instanceOf(OsgiDefaultEndpoint.class));
         assertThat(OsgiEndpointType.MULTICAST.createEndpoint("osgi:multicast:test", comp), instanceOf(OsgiMulticastEndpoint.class));
         assertThat(OsgiEndpointType.ROUNDROBIN.createEndpoint("osgi:roundrobin:test", comp), instanceOf(OsgiRoundRobinEndpoint.class));
+        assertThat(OsgiEndpointType.RANDOM.createEndpoint("osgi:random:test", comp), instanceOf(OsgiRandomEndpoint.class));
     }
 
 }

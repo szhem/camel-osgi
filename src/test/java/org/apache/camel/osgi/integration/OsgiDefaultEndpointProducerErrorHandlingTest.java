@@ -55,7 +55,7 @@ public class OsgiDefaultEndpointProducerErrorHandlingTest extends OsgiIntegratio
     }
 
     @Test
-    public void sendMessage() throws Exception {
+    public void testSendMessage() throws Exception {
         MockEndpoint finish = consumerContext.getEndpoint("mock:finish", MockEndpoint.class);
         finish.whenAnyExchangeReceived(new Processor() {
             @Override

@@ -1,7 +1,6 @@
 package org.apache.camel.osgi.util;
 
 import org.apache.camel.RuntimeCamelException;
-import org.apache.camel.osgi.BundleDelegatingClassLoader;
 import org.apache.camel.osgi.OsgiProxy;
 import org.apache.camel.osgi.OsgiProxyCreator;
 import org.osgi.framework.*;
@@ -25,9 +24,17 @@ public class OsgiServiceCollection<E> implements Collection<E> {
     protected final ClassLoader classLoader;
     protected final OsgiProxyCreator proxyCreator;
 
-    public OsgiServiceCollection(BundleContext bundleContext, Filter filter, ClassLoader classLoader,
+    /**
+     *
+     * @param bundleContext
+     * @param filter
+     * @param fallbackClassLoader {@code ClassLoader} to load classes and resources in the case when these classes and
+*    * resources cannot be loaded by means of bundle associated with the given bundleContext
+     * @param proxyCreator
+     */
+    public OsgiServiceCollection(BundleContext bundleContext, Filter filter, ClassLoader fallbackClassLoader,
              OsgiProxyCreator proxyCreator) {
-        this(bundleContext, filter, classLoader, proxyCreator, new DynamicCollection<E>());
+        this(bundleContext, filter, fallbackClassLoader, proxyCreator, new DynamicCollection<E>());
     }
 
 	public OsgiServiceCollection(BundleContext bundleContext, Filter filter, ClassLoader classLoader,

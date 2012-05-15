@@ -48,6 +48,14 @@ public enum OsgiEndpointType {
         public OsgiRoundRobinEndpoint createEndpoint(String uri, Component comp) {
             return new OsgiRoundRobinEndpoint(uri, comp);
         }
+    },
+
+    RANDOM("random:") {
+        @Override
+        @SuppressWarnings("unchecked")
+        public OsgiRandomEndpoint createEndpoint(String uri, Component comp) {
+            return new OsgiRandomEndpoint(uri, comp);
+        }
     };
 
     protected final String prefix;
@@ -77,8 +85,8 @@ public enum OsgiEndpointType {
      * Extracts name of the endpoint from its path.
      * <p/>
      * If path starts with predefined endpoint prefix ({@literal "default:"}, {@literal "multicast:"},
-     * {@literal "roundrobin:"}) than endpoint name is considered to be the remaining path of the endpoint path
-     * without prefix, else endpoint name is the whole path.
+     * {@literal "roundrobin:"}, {@literal "random:"}) than endpoint name is considered to be the remaining path of
+     * the endpoint path without prefix, else endpoint name is the whole path.
      *
      * @param path the path of the camel endpoint, i.e. {@code "default:test"} for {@code "osgi:default:test"}
      *
@@ -95,9 +103,10 @@ public enum OsgiEndpointType {
      *
      * @param path the path of the camel endpoint, i.e. {@code "default:test"} for {@code "osgi:default:test"}
      *
-     * @return {@link #DEFAULT} endpoint type by default or for the path that starts with {@code "default:"} prefix,<br/>
-     * {@link #MULTICAST} endpoint type if path starts with {@code "multicast:"} prefix,<br/>
-     * {@link #ROUNDROBIN} endpoint type if path starts with {@literal "roundrobin:"} prefix
+     * @return {@link #DEFAULT} endpoint type by default or for the path that starts with {@literal "default:"} prefix,<br/>
+     * {@link #MULTICAST} endpoint type if path starts with {@literal "multicast:"} prefix,<br/>
+     * {@link #ROUNDROBIN} endpoint type if path starts with {@literal "roundrobin:"} prefix,<br/>
+     * {@link #RANDOM} endpoint type if path starts with {@literal "random:"} prefix
      */
     public static OsgiEndpointType fromPath(String path) {
         OsgiEndpointType result = DEFAULT;

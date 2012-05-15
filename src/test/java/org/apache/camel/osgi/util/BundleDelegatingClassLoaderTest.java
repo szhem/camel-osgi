@@ -1,4 +1,4 @@
-package org.apache.camel.osgi;
+package org.apache.camel.osgi.util;
 
 import org.junit.Test;
 import org.osgi.framework.Bundle;
