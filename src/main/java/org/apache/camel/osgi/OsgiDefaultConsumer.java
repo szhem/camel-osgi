@@ -1,10 +1,11 @@
 package org.apache.camel.osgi;
 
-import org.apache.camel.*;
+import org.apache.camel.Consumer;
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
+import org.apache.camel.SuspendableService;
 import org.apache.camel.impl.DefaultExchange;
-import org.apache.camel.impl.LoggingExceptionHandler;
-import org.apache.camel.impl.ServiceSupport;
-import org.apache.camel.spi.ExceptionHandler;
+import org.apache.camel.support.ServiceSupport;
 import org.apache.camel.util.ExchangeHelper;
 import org.apache.camel.util.ServiceHelper;
 import org.osgi.framework.BundleContext;
@@ -18,11 +19,10 @@ public class OsgiDefaultConsumer extends ServiceSupport implements Consumer, Sus
 
     private ServiceRegistration registration;
     private OsgiDefaultEndpoint endpoint;
-    private Map<String, String> props;
+    private Map<String, Object> props;
     private Processor processor;
-    private ExceptionHandler exceptionHandler;
 
-    public OsgiDefaultConsumer(OsgiDefaultEndpoint endpoint, Processor processor, Map<String, String> props) {
+    public OsgiDefaultConsumer(OsgiDefaultEndpoint endpoint, Processor processor, Map<String, Object> props) {
         this.endpoint = endpoint;
         this.props = props;
         this.processor = processor;
@@ -56,13 +56,13 @@ public class OsgiDefaultConsumer extends ServiceSupport implements Consumer, Sus
     }
 
     protected BundleContext getBundleContext() {
-        return getEndpoint().getBundleContext();
+        return getEndpoint().getAppBundleContext();
     }
 
     protected void register() {
         if(this.registration == null) {
             this.registration = getBundleContext().registerService(
-                    OsgiComponent.OBJECT_CLASS, this, new Hashtable<String, String>(props));
+                    OsgiComponent.OBJECT_CLASS, this, new Hashtable<String, Object>(props));
         }
     }
 
@@ -83,6 +83,14 @@ public class OsgiDefaultConsumer extends ServiceSupport implements Consumer, Sus
         }
     }
 
+    /**
+     * Creates exchange copy, so that {@link org.apache.camel.Exchange#getContext()} will return the {@code CamelContext}
+     * of the this consumer endpoint instead of the producer endpoint, that sent the provided exchange.
+     *
+     * @param exchange an exchange to copy
+     *
+     * @return exchange copy
+     */
     protected Exchange copyExchange(Exchange exchange) {
         OsgiDefaultEndpoint endpoint = getEndpoint();
 
@@ -101,19 +109,4 @@ public class OsgiDefaultConsumer extends ServiceSupport implements Consumer, Sus
         return copy;
     }
 
-    public ExceptionHandler getExceptionHandler() {
-        if (exceptionHandler == null) {
-            exceptionHandler = new LoggingExceptionHandler(getClass());
-        }
-        return exceptionHandler;
-    }
-
-    public void setExceptionHandler(ExceptionHandler exceptionHandler) {
-        this.exceptionHandler = exceptionHandler;
-    }
-
-    protected void handleException(Throwable t) {
-        Throwable newt = (t == null) ? new IllegalArgumentException("Handling [null] exception") : t;
-        getExceptionHandler().handleException(newt);
-    }
 }

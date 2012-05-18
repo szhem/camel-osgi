@@ -1,6 +1,6 @@
 package org.apache.camel.osgi.filter;
 
-public class LikeFilter extends AbstractFilter {
+public class LikeCriterion extends AbstractCriterion {
 
     public static enum MatchMode {
         START,
@@ -13,13 +13,13 @@ public class LikeFilter extends AbstractFilter {
     private Object value;
     private MatchMode mode;
 
-    public LikeFilter(String attribute, Object value, MatchMode mode) {
+    public LikeCriterion(String attribute, Object value, MatchMode mode) {
         this.attribute = attribute;
         this.value = value;
         this.mode = mode;
     }
 
-    public LikeFilter(String attribute, Object value) {
+    public LikeCriterion(String attribute, Object value) {
         this(attribute, value, MatchMode.EXACT);
     }
 

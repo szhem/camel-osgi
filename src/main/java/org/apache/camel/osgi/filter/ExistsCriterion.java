@@ -1,10 +1,10 @@
 package org.apache.camel.osgi.filter;
 
-public class ExistsFilter extends AbstractFilter {
+public class ExistsCriterion extends AbstractCriterion {
 
     private String attribute;
 
-    public ExistsFilter(String attribute) {
+    public ExistsCriterion(String attribute) {
         this.attribute = attribute;
     }
 

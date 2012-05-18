@@ -1,10 +1,10 @@
 package org.apache.camel.osgi.filter;
 
-public class IsFilter extends AbstractFilter {
+public class IsCriterion extends AbstractCriterion {
 
     private Class<?> type;
 
-    public IsFilter(Class<?> type) {
+    public IsCriterion(Class<?> type) {
         this.type = type;
     }
 

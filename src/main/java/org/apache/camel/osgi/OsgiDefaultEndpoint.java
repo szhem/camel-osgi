@@ -16,14 +16,14 @@ import java.util.Map;
 
 public class OsgiDefaultEndpoint extends DefaultEndpoint {
 
-    private final BundleContext bundleContext;
-    private final ClassLoader bundleClassLoader;
+    private final BundleContext appBundleContext;
+    private final ClassLoader compClassLoader;
 
-    private Map<String, String> props = Collections.emptyMap();
+    private Map<String, Object> props = Collections.emptyMap();
 
     public OsgiDefaultEndpoint(String endpointUri, Component component) {
         super(endpointUri, component);
-        this.bundleClassLoader = getClass().getClassLoader();
+        this.compClassLoader = getClass().getClassLoader();
 
         ClassLoader appClassLoader = component.getCamelContext().getApplicationContextClassLoader();
 
@@ -38,13 +38,13 @@ public class OsgiDefaultEndpoint extends DefaultEndpoint {
                 throw e;
             } catch (Exception e) {
                 throw new IllegalArgumentException(
-                        String.format("ClassLoader of CamelContext [%s] is not OSGi aware", appClassLoader));
+                        String.format("ClassLoader of CamelContext [%s] is not OSGi bundle aware", appClassLoader));
             }
         } else {
             bundle = BundleReference.class.cast(appClassLoader).getBundle();
         }
 
-        bundleContext = bundle.getBundleContext();
+        appBundleContext = bundle.getBundleContext();
     }
 
     @Override
@@ -67,19 +67,19 @@ public class OsgiDefaultEndpoint extends DefaultEndpoint {
         return (OsgiComponent) super.getComponent();
     }
 
-    public Map<String, String> getProps() {
+    public Map<String, Object> getProps() {
         return props;
     }
 
-    public void setProps(Map<String, String> props) {
+    public void setProps(Map<String, Object> props) {
         this.props = props;
     }
 
-    protected BundleContext getBundleContext() {
-        return bundleContext;
+    protected BundleContext getAppBundleContext() {
+        return appBundleContext;
     }
 
-    protected ClassLoader getBundleClassLoader() {
-        return bundleClassLoader;
+    protected ClassLoader getCompClassLoader() {
+        return compClassLoader;
     }
 }

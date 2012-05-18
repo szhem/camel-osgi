@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class OsgiRandomProducer extends OsgiDefaultProducer {
 
-    public OsgiRandomProducer(OsgiDefaultEndpoint endpoint, Map<String, String> props) {
+    public OsgiRandomProducer(OsgiDefaultEndpoint endpoint, Map<String, Object> props) {
         super(endpoint, props);
     }
 

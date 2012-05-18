@@ -18,21 +18,24 @@ import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
-public class OsgiDefaultEndpointProducerErrorHandlingTest extends OsgiIntegrationTest {
+public class OsgiRoundRobinEndpointProducerErrorHandlingTest extends OsgiIntegrationTest {
+
+    private static final int DELIVERY_COUNT = 4;
+    private static final int ENDPOINT_COUNT = 5;
 
     @Inject
-    @Filter(value = "(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiDefaultEndpointProducerErrorHandlingTest.producer)")
+    @Filter(value = "(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiRoundRobinEndpointProducerErrorHandlingTest.producer)")
     private CamelContext producerContext;
 
     @Inject
-    @Filter("(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiDefaultEndpointProducerErrorHandlingTest.consumer)")
+    @Filter("(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiRoundRobinEndpointProducerErrorHandlingTest.consumer)")
     private CamelContext consumerContext;
 
     @Configuration
     public Option[] config() {
         return new Option[] {
             defaultOptions(),
-
+            //debugConfiguration(),
             provision(
                 bundle()
                     .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer.xml"))
@@ -55,21 +58,22 @@ public class OsgiDefaultEndpointProducerErrorHandlingTest extends OsgiIntegratio
     }
 
     @Test
-    public void testSendMessage() throws Exception {
-        MockEndpoint finish = consumerContext.getEndpoint("mock:finish", MockEndpoint.class);
-        finish.whenAnyExchangeReceived(new Processor() {
-            @Override
-            public void process(Exchange exchange) throws Exception {
-                throw new RuntimeException("TestException!!!");
-            }
-        });
-        finish.expectedMessageCount(4);
+    public void testHandleException() throws Exception {
+        for(int i = 0; i < DELIVERY_COUNT; i++) {
+            MockEndpoint finish = consumerContext.getEndpoint("mock:finish" + i, MockEndpoint.class);
+            finish.whenAnyExchangeReceived(new Processor() {
+                @Override
+                public void process(Exchange exchange) throws Exception {
+                    throw new RuntimeException("TestException!!!");
+                }
+            });
+            finish.expectedBodiesReceived("1234567890");
+        }
+        MockEndpoint finish4 = consumerContext.getEndpoint("mock:finish4", MockEndpoint.class);
+        finish4.expectedBodiesReceived("1234567890-1");
 
-        MockEndpoint consumerException = consumerContext.getEndpoint("mock:exception", MockEndpoint.class);
-        consumerException.expectedMessageCount(0);
-
-        MockEndpoint producerException = producerContext.getEndpoint("mock:exception", MockEndpoint.class);
-        producerException.expectedBodiesReceived("1234567890");
+        MockEndpoint exception = producerContext.getEndpoint("mock:exception", MockEndpoint.class);
+        exception.expectedBodiesReceived("1234567890");
 
         ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
         try {
@@ -78,8 +82,11 @@ public class OsgiDefaultEndpointProducerErrorHandlingTest extends OsgiIntegratio
         } catch (CamelExecutionException e) {
             assertEquals("TestException!!!", e.getCause().getMessage());
         }
+        producerTemplate.sendBody("direct:start", "1234567890-1");
 
         MockEndpoint.assertIsSatisfied(consumerContext);
         MockEndpoint.assertIsSatisfied(producerContext);
     }
+
+
 }

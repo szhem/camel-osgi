@@ -21,7 +21,7 @@ public class OsgiMulticastProducer extends OsgiDefaultProducer {
 
     private final boolean defaultExecutorService;
 
-    public OsgiMulticastProducer(OsgiDefaultEndpoint endpoint, Map<String, String> props,
+    public OsgiMulticastProducer(OsgiDefaultEndpoint endpoint, Map<String, Object> props,
              AggregationStrategy aggregationStrategy, boolean parallelProcessing, ExecutorService executorService,
              boolean streaming, boolean stopOnExcetion, long timeout, Processor onPrepare) {
         super(endpoint, props);

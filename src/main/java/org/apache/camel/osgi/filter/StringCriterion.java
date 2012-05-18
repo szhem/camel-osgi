@@ -1,10 +1,10 @@
 package org.apache.camel.osgi.filter;
 
-public class StringFilter extends AbstractFilter {
+public class StringCriterion extends AbstractCriterion {
 
     private String filter;
 
-    public StringFilter(String filter) {
+    public StringCriterion(String filter) {
         this.filter = filter;
     }
 

@@ -6,8 +6,6 @@ import org.apache.camel.impl.DefaultProducer;
 import org.apache.camel.osgi.filter.Filters;
 import org.apache.camel.osgi.util.OsgiServiceList;
 import org.apache.camel.util.ServiceHelper;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.InvalidSyntaxException;
 
 import java.util.List;
 import java.util.Map;
@@ -17,17 +15,13 @@ public class OsgiDefaultProducer extends DefaultProducer {
     protected final OsgiServiceList<Processor> services;
     protected Processor processor;
 
-    public OsgiDefaultProducer(OsgiDefaultEndpoint endpoint, Map<String, String> props) {
+    public OsgiDefaultProducer(OsgiDefaultEndpoint endpoint, Map<String, Object> props) {
         super(endpoint);
-        try {
-            this.services = new OsgiServiceList<Processor>(
-                    endpoint.getBundleContext(),
-                    FrameworkUtil.createFilter(Filters.allEq(props).value()),
-                    endpoint.getBundleClassLoader(),
-                    new OsgiDefaultProxyCreator());
-        } catch (InvalidSyntaxException e) {
-            throw new IllegalArgumentException(String.format("Unable to create filter from props [%s]", props), e);
-        }
+        this.services = new OsgiServiceList<Processor>(
+            endpoint.getAppBundleContext(),
+            Filters.allEq(props).filter(),
+            endpoint.getCompClassLoader(),
+            new OsgiDefaultProxyCreator());
     }
 
     @Override
