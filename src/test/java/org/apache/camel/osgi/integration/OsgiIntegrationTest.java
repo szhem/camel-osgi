@@ -44,7 +44,7 @@ public abstract class OsgiIntegrationTest {
      * @param command
      * @return
      */
-    protected String executeCommand(String command) {
+    protected String executeCommand(String command) throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(byteArrayOutputStream);
         CommandSession commandSession = commandProcessor.createSession(System.in, printStream, System.err);
@@ -52,12 +52,8 @@ public abstract class OsgiIntegrationTest {
         commandSession.put("APPLICATION", System.getProperty("karaf.name", "root"));
         commandSession.put("USER", "karaf");
 
-        try {
-            System.err.println(command);
-            commandSession.execute(command);
-        } catch (Exception e) {
-            e.printStackTrace(System.err);
-        }
+        commandSession.execute(command);
+
         return byteArrayOutputStream.toString();
     }
 
@@ -68,7 +64,7 @@ public abstract class OsgiIntegrationTest {
      * @param commands
      * @return
      */
-    protected String executeCommands(final String ...commands) {
+    protected String executeCommands(final String ...commands) throws Exception {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         final PrintStream printStream = new PrintStream(byteArrayOutputStream);
         final CommandProcessor commandProcessor = getOsgiService(CommandProcessor.class);
@@ -77,25 +73,17 @@ public abstract class OsgiIntegrationTest {
         commandSession.put("USER", "karaf");
 
         for (String command : commands) {
-            try {
-                System.err.println(command);
-                commandSession.execute(command);
-            } catch (Exception e) {
-                e.printStackTrace(System.err);
-            }
+            commandSession.execute(command);
         }
 
         return byteArrayOutputStream.toString();
     }
 
-    protected Bundle getInstalledBundle(String symbolicName) {
+    protected Bundle getInstalledBundle(String symbolicName) throws Exception {
         for (Bundle b : bundleContext.getBundles()) {
             if (b.getSymbolicName().equals(symbolicName)) {
                 return b;
             }
-        }
-        for (Bundle b : bundleContext.getBundles()) {
-            System.err.println("Bundle: " + b.getSymbolicName());
         }
         throw new RuntimeException("Bundle " + symbolicName + " does not exist");
     }

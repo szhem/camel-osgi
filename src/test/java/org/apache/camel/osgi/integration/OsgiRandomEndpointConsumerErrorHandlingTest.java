@@ -18,17 +18,14 @@ import static org.ops4j.pax.exam.CoreOptions.provision;
 import static org.ops4j.pax.tinybundles.core.TinyBundles.bundle;
 
 @ExamReactorStrategy(AllConfinedStagedReactorFactory.class)
-public class OsgiRoundRobinEndpointProducerErrorHandlingTest extends OsgiIntegrationTest {
-
-    private static final int DELIVERY_COUNT = 4;
-    private static final int ENDPOINT_COUNT = 5;
+public class OsgiRandomEndpointConsumerErrorHandlingTest extends OsgiIntegrationTest {
 
     @Inject
-    @Filter(value = "(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiRoundRobinEndpointProducerErrorHandlingTest.producer)")
+    @Filter(value = "(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiRandomEndpointConsumerErrorHandlingTest.producer)")
     private CamelContext producerContext;
 
     @Inject
-    @Filter("(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiRoundRobinEndpointProducerErrorHandlingTest.consumer)")
+    @Filter("(camel.context.symbolicname=org.apache.camel.osgi.integration.OsgiRandomEndpointConsumerErrorHandlingTest.consumer)")
     private CamelContext consumerContext;
 
     @Configuration
@@ -59,7 +56,10 @@ public class OsgiRoundRobinEndpointProducerErrorHandlingTest extends OsgiIntegra
 
     @Test
     public void testHandleException() throws Exception {
-        for(int i = 0; i < DELIVERY_COUNT; i++) {
+        final int messageCount = 100;
+        final int endpointCount = 2;
+
+        for(int i = 0; i < endpointCount; i++) {
             MockEndpoint finish = consumerContext.getEndpoint("mock:finish" + i, MockEndpoint.class);
             finish.whenAnyExchangeReceived(new Processor() {
                 @Override
@@ -67,26 +67,27 @@ public class OsgiRoundRobinEndpointProducerErrorHandlingTest extends OsgiIntegra
                     throw new RuntimeException("TestException!!!");
                 }
             });
-            finish.expectedBodiesReceived("1234567890");
+            finish.allMessages().body().isEqualTo("1234567890");
         }
-        MockEndpoint finish4 = consumerContext.getEndpoint("mock:finish4", MockEndpoint.class);
-        finish4.expectedBodiesReceived("1234567890-1");
 
-        MockEndpoint exception = producerContext.getEndpoint("mock:exception", MockEndpoint.class);
-        exception.expectedBodiesReceived("1234567890");
+        MockEndpoint consumerException = consumerContext.getEndpoint("mock:exception", MockEndpoint.class);
+        consumerException.expectedMessageCount(messageCount);
+        consumerException.allMessages().body().isEqualTo("1234567890");
+
+        MockEndpoint producerException = producerContext.getEndpoint("mock:exception", MockEndpoint.class);
+        producerException.expectedMessageCount(0);
 
         ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
-        try {
-            producerTemplate.sendBody("direct:start", "1234567890");
-            fail("CamelExecutionException expected");
-        } catch (CamelExecutionException e) {
-            assertEquals("TestException!!!", e.getCause().getMessage());
+        for(int i = 0; i < messageCount; i++) {
+            try {
+                producerTemplate.sendBody("direct:start", "1234567890");
+                fail("CamelExecutionException expected");
+            } catch (CamelExecutionException e) {
+                assertEquals("TestException!!!", e.getCause().getMessage());
+            }
         }
-        producerTemplate.sendBody("direct:start", "1234567890-1");
 
         MockEndpoint.assertIsSatisfied(consumerContext);
         MockEndpoint.assertIsSatisfied(producerContext);
     }
-
-
 }
