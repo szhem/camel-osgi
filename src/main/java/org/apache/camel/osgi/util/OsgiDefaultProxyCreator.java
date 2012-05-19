@@ -1,4 +1,4 @@
-package org.apache.camel.osgi;
+package org.apache.camel.osgi.util;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -10,6 +10,13 @@ import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The {@code OsgiDefaultProxyCreator} is the default implementation of the {@link OsgiProxyCreator}.
+ * <p/>
+ * It uses {@link OsgiInvocationHandler} to handle calls to the exported OSGi service.
+ *
+ * @see OsgiInvocationHandler
+ */
 public class OsgiDefaultProxyCreator implements OsgiProxyCreator {
 
     @Override

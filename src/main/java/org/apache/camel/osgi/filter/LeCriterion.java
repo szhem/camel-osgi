@@ -1,5 +1,9 @@
 package org.apache.camel.osgi.filter;
 
+/**
+ * The {@code LeCriterion} is the criterion in which specified attribute must be less or equal to the
+ * specified value.
+ */
 public class LeCriterion extends AbstractCriterion {
 
     private String attribute;

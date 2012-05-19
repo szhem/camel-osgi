@@ -9,13 +9,17 @@ import org.apache.camel.spi.ExecutorServiceManager;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * The {@code OsgiMulticastProducer} is the producer that uses {@link MulticastProcessor} to send exchanges to OSGi
+ * consumers.
+ */
 public class OsgiMulticastProducer extends OsgiDefaultProducer {
 
     private final AggregationStrategy aggregationStrategy;
     private final boolean parallelProcessing;
     private final ExecutorService executorService;
     private final boolean streaming;
-    private final boolean stopOnExcetion;
+    private final boolean stopOnException;
     private final long timeout;
     private final Processor onPrepare;
 
@@ -23,12 +27,12 @@ public class OsgiMulticastProducer extends OsgiDefaultProducer {
 
     public OsgiMulticastProducer(OsgiDefaultEndpoint endpoint, Map<String, Object> props,
              AggregationStrategy aggregationStrategy, boolean parallelProcessing, ExecutorService executorService,
-             boolean streaming, boolean stopOnExcetion, long timeout, Processor onPrepare) {
+             boolean streaming, boolean stopOnException, long timeout, Processor onPrepare) {
         super(endpoint, props);
         this.aggregationStrategy = aggregationStrategy;
         this.parallelProcessing = parallelProcessing;
         this.streaming = streaming;
-        this.stopOnExcetion = stopOnExcetion;
+        this.stopOnException = stopOnException;
         this.timeout = timeout;
         this.onPrepare = onPrepare;
 
@@ -44,7 +48,7 @@ public class OsgiMulticastProducer extends OsgiDefaultProducer {
     @Override
     protected Processor createProcessor() {
         return new MulticastProcessor(getEndpoint().getCamelContext(), services, aggregationStrategy, parallelProcessing,
-                executorService, streaming, stopOnExcetion, timeout, onPrepare, false);
+                executorService, streaming, stopOnException, timeout, onPrepare, false);
     }
 
     @Override
@@ -53,5 +57,37 @@ public class OsgiMulticastProducer extends OsgiDefaultProducer {
             getEndpoint().getCamelContext().getExecutorServiceManager().shutdownNow(executorService);
         }
         super.doShutdown();
+    }
+
+    public AggregationStrategy getAggregationStrategy() {
+        return aggregationStrategy;
+    }
+
+    public boolean isParallelProcessing() {
+        return parallelProcessing;
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
+
+    public boolean isStreaming() {
+        return streaming;
+    }
+
+    public boolean isStopOnException() {
+        return stopOnException;
+    }
+
+    public long getTimeout() {
+        return timeout;
+    }
+
+    public Processor getOnPrepare() {
+        return onPrepare;
+    }
+
+    public boolean isDefaultExecutorService() {
+        return defaultExecutorService;
     }
 }

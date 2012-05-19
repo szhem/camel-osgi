@@ -1,11 +1,35 @@
 package org.apache.camel.osgi.filter;
 
+/**
+ * The {@code LikeCriterion} is the criterion that represents wildcarded match of the specified attribute to the
+ * specified value.
+ * <p/>
+ * Type of the match is defined by means of {@link MatchMode}. By default {@link MatchMode#EXACT} is used.
+ */
 public class LikeCriterion extends AbstractCriterion {
 
+    /**
+     * The {@code MatchMode} is the type of the match to be used.
+     */
     public static enum MatchMode {
+        /**
+         * The match mode to match the beginning of the specified value, i.e. {@code "attribute=val*"}.
+         */
         START,
+
+        /**
+         * The match mode to match the end of the specified value, i.e. {@code "attribute=*ue"}.
+         */
         END,
+
+        /**
+         * The match mode to match some substring of the specified value, i.e. {@code "attribute=*alu*"}.
+         */
         ANYWHERE,
+
+        /**
+         * The match mode to match exact the specified value, i.e. {@code "attribute=value"}.
+         */
         EXACT
     }
 

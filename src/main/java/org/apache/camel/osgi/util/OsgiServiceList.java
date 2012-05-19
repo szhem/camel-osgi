@@ -1,6 +1,5 @@
 package org.apache.camel.osgi.util;
 
-import org.apache.camel.osgi.OsgiProxyCreator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 
@@ -9,6 +8,14 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
 
+/**
+ * The {@code OsgiServiceList} is OSGi service dynamic list that allows iterating while the
+ * underlying storage is being shrunk/expanded. This list is read-only as its content is being retrieved
+ * dynamically from the OSGi platform.
+ * <p/>
+ * This list and its iterators are thread-safe. That is, multiple threads can access the list. However,
+ * since the list is read-only, it cannot be modified by the client.
+ */
 public class OsgiServiceList<E> extends OsgiServiceCollection<E> implements List<E>, RandomAccess {
 
 	public OsgiServiceList(BundleContext context, Filter filter, ClassLoader classLoader, OsgiProxyCreator proxyCreator) {
@@ -47,9 +54,8 @@ public class OsgiServiceList<E> extends OsgiServiceCollection<E> implements List
 		throw new UnsupportedOperationException();
 	}
 
-	//
-	// WRITE operations forbidden
-	//
+    // mutators are forbidden
+
     @Override
 	public E remove(int index) {
 		throw new UnsupportedOperationException();

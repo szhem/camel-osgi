@@ -1,15 +1,28 @@
 package org.apache.camel.osgi.util;
 
-import org.apache.camel.RuntimeCamelException;
-import org.apache.camel.osgi.OsgiProxy;
-import org.apache.camel.osgi.OsgiProxyCreator;
-import org.osgi.framework.*;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * The {@code OsgiServiceCollection} is OSGi service dynamic collection that allows iterating while the
+ * underlying storage is being shrunk/expanded. This collection is read-only as its content is being retrieved
+ * dynamically from the OSGi platform.
+ * <p/>
+ * This collection and its iterators are thread-safe. That is, multiple threads can access the collection. However,
+ * since the collection is read-only, it cannot be modified by the client.
+ * <p/>
+ * {@link #startTracking()} method must be called prior to track for the OSGi services. {@link #stopTracking}
+ * method must be called to release all the associated resources.
+ */
 public class OsgiServiceCollection<E> implements Collection<E> {
 
 	protected final DynamicCollection<E> services;
@@ -19,39 +32,53 @@ public class OsgiServiceCollection<E> implements Collection<E> {
 
     protected final BundleContext bundleContext;
 
-    protected final Filter filter;
+    protected final String filter;
     protected final ServiceListener listener;
-    protected final ClassLoader classLoader;
+    protected final ClassLoader fallbackClassLoader;
     protected final OsgiProxyCreator proxyCreator;
 
     /**
+     * Create an instance of {@code OsgiServiceCollection}.
      *
-     * @param bundleContext
-     * @param filter
+     * @param bundleContext the {@link BundleContext} instance to look for the services that match the specified filter
+     * @param filter OSGi instance to lookup OSGi services
      * @param fallbackClassLoader {@code ClassLoader} to load classes and resources in the case when these classes and
 *    * resources cannot be loaded by means of bundle associated with the given bundleContext
-     * @param proxyCreator
+     * @param proxyCreator an instance of {@link OsgiProxyCreator} to wrap services registered in the OSGi registry
      */
-    public OsgiServiceCollection(BundleContext bundleContext, Filter filter, ClassLoader fallbackClassLoader,
+    public OsgiServiceCollection(BundleContext bundleContext, String filter, ClassLoader fallbackClassLoader,
              OsgiProxyCreator proxyCreator) {
         this(bundleContext, filter, fallbackClassLoader, proxyCreator, new DynamicCollection<E>());
     }
 
-	public OsgiServiceCollection(BundleContext bundleContext, Filter filter, ClassLoader classLoader,
+    /**
+     * Create an instance of {@code OsgiServiceCollection}.
+     *
+     * @param bundleContext the {@link BundleContext} instance to look for the services that match the specified filter
+     * @param filter OSGi filter to lookup OSGi services
+     * @param fallbackClassLoader {@code ClassLoader} to load classes and resources in the case when these classes and
+     *    * resources cannot be loaded by means of bundle associated with the given bundleContext
+     * @param proxyCreator an instance of {@link OsgiProxyCreator} to wrap services registered in the OSGi registry
+     * @param backed the backed dynamic collection to hold proxies for OSGi services
+     */
+	public OsgiServiceCollection(BundleContext bundleContext, String filter, ClassLoader fallbackClassLoader,
              OsgiProxyCreator proxyCreator, DynamicCollection<E> backed) {
         this.bundleContext = bundleContext;
 		this.filter = filter;
-        this.classLoader = classLoader;
+        this.fallbackClassLoader = fallbackClassLoader;
         this.proxyCreator = proxyCreator;
         this.services = backed;
         this.idToService = new HashMap<Long, E>();
 		this.listener = new ServiceInstanceListener();
 	}
 
-	public void startTracking() throws InterruptedException {
+    /**
+     * Start tracking for OSGi services.
+     *
+     * @throws IllegalStateException if this collection was initialized with invalid OSGi filter
+     */
+	public void startTracking() {
         try {
-            String filter = this.filter.toString();
-
             bundleContext.addServiceListener(listener, filter);
             ServiceReference[] alreadyDefined = bundleContext.getServiceReferences(null, filter);
             if(alreadyDefined != null) {
@@ -60,11 +87,14 @@ public class OsgiServiceCollection<E> implements Collection<E> {
                 }
             }
         } catch (InvalidSyntaxException e) {
-            throw new RuntimeCamelException(e);
+            throw new IllegalStateException(e);
         }
     }
 
-	public void stopTraking() {
+    /**
+     * Stops tracking for OSGi services releasing all obtained resource while starting tracking.
+     */
+	public void stopTracking() {
         bundleContext.removeServiceListener(listener);
 
         synchronized (lock) {
@@ -159,7 +189,7 @@ public class OsgiServiceCollection<E> implements Collection<E> {
                 case ServiceEvent.MODIFIED:
                     synchronized (lock) {
                         E service = proxyCreator.createProxy(
-                                bundleContext, ref, new BundleDelegatingClassLoader(ref.getBundle(), classLoader));
+                                bundleContext, ref, new BundleDelegatingClassLoader(ref.getBundle(), fallbackClassLoader));
                         idToService.put(serviceID, service);
                         services.add(service);
                     }

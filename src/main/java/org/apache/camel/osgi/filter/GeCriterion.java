@@ -1,5 +1,9 @@
 package org.apache.camel.osgi.filter;
 
+/**
+ * The {@code GeCriterion} is the criterion in which specified attribute must be greater or equal to the
+ * specified value.
+ */
 public class GeCriterion extends AbstractCriterion {
 
     private String attribute;

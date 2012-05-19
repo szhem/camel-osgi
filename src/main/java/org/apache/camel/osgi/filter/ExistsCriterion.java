@@ -1,5 +1,8 @@
 package org.apache.camel.osgi.filter;
 
+/**
+ * The {@code ExistsCriterion} is the criterion that represents existence of the specified attribute.
+ */
 public class ExistsCriterion extends AbstractCriterion {
 
     private String attribute;

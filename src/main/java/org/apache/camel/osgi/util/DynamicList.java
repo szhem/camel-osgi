@@ -5,6 +5,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.RandomAccess;
 
+/**
+ * The {@code DynamicList} is implementation of {@link List} that allows iterators to see additions and
+ * removals of elements while iterating.
+ * <p/>
+ * This list and its iterators are thread safe but all operations happen under a synchronization lock.
+ */
 public class DynamicList<E> extends DynamicCollection<E> implements List<E>, RandomAccess {
 
     @Override

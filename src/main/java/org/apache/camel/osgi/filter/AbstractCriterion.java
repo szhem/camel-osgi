@@ -4,6 +4,10 @@ import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
+/**
+ * The {@code AbstractCriterion} implements commons functionality for all the OSGi {@link Criterion criterion}
+ * implementations.
+ */
 public abstract class AbstractCriterion implements Criterion {
 
     public Filter filter() {
