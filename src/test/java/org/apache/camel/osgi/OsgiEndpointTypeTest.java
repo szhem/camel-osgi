@@ -5,7 +5,9 @@ import org.apache.camel.osgi.util.BundleDelegatingClassLoader;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
