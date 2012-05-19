@@ -28,7 +28,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Export-Package>${project.artifactId};version="${project.version}"</Export-Package>
+                        <Export-Package>${project.artifactId}*;version="${project.version}"</Export-Package>
                         <Import-Package>
                             *
                         </Import-Package>
