@@ -1,1 +1,1 @@
-class=org.apache.camel.osgi.OsgiComponent
+class=org.apache.camel.osgi.service.OsgiComponent
