@@ -49,8 +49,9 @@ public abstract class OsgiIntegrationTest {
     /**
      * Executes the command and returns the output as a String.
      *
-     * @param command
-     * @return
+     * @param command the command to execute
+     *
+     * @return result of command execution
      */
     protected String executeCommand(String command) throws Exception {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -68,11 +69,14 @@ public abstract class OsgiIntegrationTest {
 
     /**
      * Executes multiple commands inside a Single Session.
+     * <p/>
      * Commands have a default timeout of 10 seconds.
-     * @param commands
-     * @return
+     *
+     * @param commands the command to execute
+     *
+     * @return result of execution of all the commands
      */
-    protected String executeCommands(final String ...commands) throws Exception {
+    protected String executeCommands(String ...commands) throws Exception {
         final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         final PrintStream printStream = new PrintStream(byteArrayOutputStream);
         final CommandProcessor commandProcessor = getOsgiService(CommandProcessor.class);
@@ -124,8 +128,8 @@ public abstract class OsgiIntegrationTest {
             Filter osgiFilter = FrameworkUtil.createFilter(flt);
             tracker = new ServiceTracker(bundleContext, osgiFilter, null);
             tracker.open(true);
+
             // Note that the tracker is not closed to keep the reference
-            // This is buggy, as the service reference may change i think
             Object svc = type.cast(tracker.waitForService(timeout));
             if (svc == null) {
                 throw new RuntimeException("Gave up waiting for service " + flt);
