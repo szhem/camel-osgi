@@ -135,6 +135,13 @@
             <version>${osgi.core.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.googlecode.pojosr</groupId>
+            <artifactId>de.kalpatec.pojosr.framework</artifactId>
+            <version>0.1.8</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Integration tests -->
         <dependency>
             <groupId>org.openengsb.labs.paxexam.karaf</groupId>

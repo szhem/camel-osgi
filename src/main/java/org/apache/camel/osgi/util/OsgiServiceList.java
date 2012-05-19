@@ -1,7 +1,6 @@
 package org.apache.camel.osgi.util;
 
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.Filter;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +17,7 @@ import java.util.RandomAccess;
  */
 public class OsgiServiceList<E> extends OsgiServiceCollection<E> implements List<E>, RandomAccess {
 
-	public OsgiServiceList(BundleContext context, Filter filter, ClassLoader classLoader, OsgiProxyCreator proxyCreator) {
+	public OsgiServiceList(BundleContext context, String filter, ClassLoader classLoader, OsgiProxyCreator proxyCreator) {
 		super(context, filter, classLoader, proxyCreator, new DynamicList<E>());
 	}
 
