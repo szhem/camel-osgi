@@ -11,6 +11,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * The {@code OsgiComponent} is the camel component that provides different types of communication between endpoints
+ * which are provided by different OSGi bundles.
+ * <p/>
+ * The types of supported endpoints can be found in {@link OsgiEndpointType}.
+ *
+ * @see OsgiEndpointType
+ */
 public class OsgiComponent extends DefaultComponent {
 
     /**
@@ -48,6 +56,15 @@ public class OsgiComponent extends DefaultComponent {
         return endpoint;
     }
 
+    /**
+     * Converts {@link Constants#SERVICE_ID} and {@link Constants#SERVICE_RANKING} if there are such in the provided
+     * properties to the types defined by OSGi specification.
+     * <p/>
+     * {@link Constants#SERVICE_ID} will be of type {@code Long},
+     * {@link Constants#SERVICE_RANKING} will be of type {@code Integer}
+     *
+     * @param props the properties to convert
+     */
     protected void convertProperties(Map<String, Object> props) {
         // convert service id and ranking to the corresponding types
         if (props.containsKey(Constants.SERVICE_ID)) {
@@ -58,6 +75,17 @@ public class OsgiComponent extends DefaultComponent {
         }
     }
 
+    /**
+     * Converts value to the specified type.
+     * <p/>
+     * If the value can be converted to the target type then the converted value is returned, else the original value is
+     * returned.
+     *
+     * @param value the value to convert
+     * @param clazz the target type
+     *
+     * @return converted value
+     */
     protected Object convertValue(Object value, Class<?> clazz) {
         TypeConverter converter = getCamelContext().getTypeConverter();
         

@@ -25,7 +25,7 @@ public class OsgiDefaultConsumerTest {
         BundleContext bundleContext = mock(BundleContext.class);
 
         OsgiDefaultEndpoint endpoint = mock(OsgiDefaultEndpoint.class);
-        when(endpoint.getAppBundleContext()).thenReturn(bundleContext);
+        when(endpoint.getApplicationBundleContext()).thenReturn(bundleContext);
 
         Service processor = mock(Service.class, withSettings().extraInterfaces(Processor.class));
         Map<String, Object> props = Collections.singletonMap("key", (Object) "value");
@@ -44,7 +44,7 @@ public class OsgiDefaultConsumerTest {
         BundleContext bundleContext = mock(BundleContext.class);
 
         OsgiDefaultEndpoint endpoint = mock(OsgiDefaultEndpoint.class);
-        when(endpoint.getAppBundleContext()).thenReturn(bundleContext);
+        when(endpoint.getApplicationBundleContext()).thenReturn(bundleContext);
 
         Service processor = mock(Service.class, withSettings().extraInterfaces(Processor.class));
         Map<String, Object> props = Collections.singletonMap("key", (Object) "value");
@@ -68,7 +68,7 @@ public class OsgiDefaultConsumerTest {
                 .thenReturn(registration);
 
         OsgiDefaultEndpoint endpoint = mock(OsgiDefaultEndpoint.class);
-        when(endpoint.getAppBundleContext()).thenReturn(bundleContext);
+        when(endpoint.getApplicationBundleContext()).thenReturn(bundleContext);
 
         Service processor = mock(Service.class, withSettings().extraInterfaces(Processor.class));
 
@@ -90,7 +90,7 @@ public class OsgiDefaultConsumerTest {
                 .thenReturn(registration);
 
         OsgiDefaultEndpoint endpoint = mock(OsgiDefaultEndpoint.class);
-        when(endpoint.getAppBundleContext()).thenReturn(bundleContext);
+        when(endpoint.getApplicationBundleContext()).thenReturn(bundleContext);
 
         Service processor = mock(Service.class, withSettings().extraInterfaces(Processor.class));
 
@@ -109,7 +109,7 @@ public class OsgiDefaultConsumerTest {
         BundleContext bundleContext = mock(BundleContext.class);
 
         OsgiDefaultEndpoint endpoint = mock(OsgiDefaultEndpoint.class);
-        when(endpoint.getAppBundleContext()).thenReturn(bundleContext);
+        when(endpoint.getApplicationBundleContext()).thenReturn(bundleContext);
 
         Service processor = mock(Service.class, withSettings().extraInterfaces(Processor.class));
         Map<String, Object> props = Collections.singletonMap("key", (Object) "value");
@@ -133,7 +133,7 @@ public class OsgiDefaultConsumerTest {
                 .thenReturn(registration);
 
         OsgiDefaultEndpoint endpoint = mock(OsgiDefaultEndpoint.class);
-        when(endpoint.getAppBundleContext()).thenReturn(bundleContext);
+        when(endpoint.getApplicationBundleContext()).thenReturn(bundleContext);
 
         Service processor = mock(Service.class, withSettings().extraInterfaces(Processor.class));
 

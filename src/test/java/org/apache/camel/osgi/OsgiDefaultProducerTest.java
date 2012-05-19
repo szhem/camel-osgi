@@ -59,8 +59,8 @@ public class OsgiDefaultProducerTest {
         BundleContext bundleContext = mock(BundleContext.class);
         
         OsgiDefaultEndpoint endpoint = mock(OsgiDefaultEndpoint.class);
-        when(endpoint.getAppBundleContext()).thenReturn(bundleContext);
-        when(endpoint.getCompClassLoader()).thenReturn(getClass().getClassLoader());
+        when(endpoint.getApplicationBundleContext()).thenReturn(bundleContext);
+        when(endpoint.getComponentClassLoader()).thenReturn(getClass().getClassLoader());
 
         OsgiDefaultProducer producer = new OsgiDefaultProducer(endpoint, Collections.<String, Object>emptyMap());
         return producer;

@@ -18,9 +18,9 @@ public class OsgiDefaultProducer extends DefaultProducer {
     public OsgiDefaultProducer(OsgiDefaultEndpoint endpoint, Map<String, Object> props) {
         super(endpoint);
         this.services = new OsgiServiceList<Processor>(
-            endpoint.getAppBundleContext(),
+            endpoint.getApplicationBundleContext(),
             Filters.allEq(props).filter(),
-            endpoint.getCompClassLoader(),
+            endpoint.getComponentClassLoader(),
             new OsgiDefaultProxyCreator());
     }
 
