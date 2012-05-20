@@ -340,4 +340,4 @@ In this case the exchange will be delivered to endpoints in all bundles in rando
 
 ### License
 
-The component is distributed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+The component is distributed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
