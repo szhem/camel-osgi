@@ -2,6 +2,7 @@
 
 1. [What is it?](#what-is-it)
 2. [How to use?](#how-to-use)
+3. [License](#license)
 
 ### What is it?
 This is [Apache Camel](http://camel.apache.org/) component that provides different ways of communication between 
@@ -336,3 +337,7 @@ Bundle2:
     </blueprint>
 
 In this case the exchange will be delivered to endpoints in all bundles in random fashion.
+
+### License
+
+The component is distributed under [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
