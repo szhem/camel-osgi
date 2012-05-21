@@ -39,7 +39,7 @@ import java.util.Map;
  */
 public class OsgiServiceCollection<E> implements Collection<E> {
 
-	protected final DynamicCollection<E> services;
+    protected final DynamicCollection<E> services;
     protected final Map<Long, E> idToService;
 
     protected final Object lock = new Object();
@@ -57,7 +57,7 @@ public class OsgiServiceCollection<E> implements Collection<E> {
      * @param bundleContext the {@link BundleContext} instance to look for the services that match the specified filter
      * @param filter OSGi instance to lookup OSGi services
      * @param fallbackClassLoader {@code ClassLoader} to load classes and resources in the case when these classes and
-*    * resources cannot be loaded by means of bundle associated with the given bundleContext
+     * resources cannot be loaded by means of bundle associated with the given bundleContext
      * @param proxyCreator an instance of {@link OsgiProxyCreator} to wrap services registered in the OSGi registry
      */
     public OsgiServiceCollection(BundleContext bundleContext, String filter, ClassLoader fallbackClassLoader,
@@ -75,23 +75,23 @@ public class OsgiServiceCollection<E> implements Collection<E> {
      * @param proxyCreator an instance of {@link OsgiProxyCreator} to wrap services registered in the OSGi registry
      * @param backed the backed dynamic collection to hold proxies for OSGi services
      */
-	public OsgiServiceCollection(BundleContext bundleContext, String filter, ClassLoader fallbackClassLoader,
+    public OsgiServiceCollection(BundleContext bundleContext, String filter, ClassLoader fallbackClassLoader,
              OsgiProxyCreator proxyCreator, DynamicCollection<E> backed) {
         this.bundleContext = bundleContext;
-		this.filter = filter;
+        this.filter = filter;
         this.fallbackClassLoader = fallbackClassLoader;
         this.proxyCreator = proxyCreator;
         this.services = backed;
         this.idToService = new HashMap<Long, E>();
-		this.listener = new ServiceInstanceListener();
-	}
+        this.listener = new ServiceInstanceListener();
+    }
 
     /**
      * Start tracking for OSGi services.
      *
      * @throws IllegalStateException if this collection was initialized with invalid OSGi filter
      */
-	public void startTracking() {
+    public void startTracking() {
         try {
             bundleContext.addServiceListener(listener, filter);
             ServiceReference[] alreadyDefined = bundleContext.getServiceReferences(null, filter);
@@ -108,90 +108,90 @@ public class OsgiServiceCollection<E> implements Collection<E> {
     /**
      * Stops tracking for OSGi services releasing all obtained resource while starting tracking.
      */
-	public void stopTracking() {
+    public void stopTracking() {
         bundleContext.removeServiceListener(listener);
 
         synchronized (lock) {
-			for (E service : services) {
-				listener.serviceChanged(new ServiceEvent(ServiceEvent.UNREGISTERING, ((OsgiProxy) service).getReference()));
-			}
+            for (E service : services) {
+                listener.serviceChanged(new ServiceEvent(ServiceEvent.UNREGISTERING, ((OsgiProxy) service).getReference()));
+            }
         }
-	}
+    }
 
     @Override
-	public Iterator<E> iterator() {
-		return new OsgiServiceIterator();
-	}
+    public Iterator<E> iterator() {
+        return new OsgiServiceIterator();
+    }
 
     @Override
-	public int size() {
-		return services.size();
-	}
+    public int size() {
+        return services.size();
+    }
 
     @Override
-	public String toString() {
+    public String toString() {
         return services.toString();
-	}
+    }
 
-	/*
-	    mutators are forbidden
+    /*
+        mutators are forbidden
     */
 
     @Override
-	public boolean remove(Object o) {
-		throw new UnsupportedOperationException();
-	}
+    public boolean remove(Object o) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
-	public boolean removeAll(Collection c) {
-		throw new UnsupportedOperationException();
-	}
+    public boolean removeAll(Collection c) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
-	public boolean add(Object o) {
-		throw new UnsupportedOperationException();
-	}
+    public boolean add(Object o) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
-	public boolean addAll(Collection c) {
-		throw new UnsupportedOperationException();
-	}
+    public boolean addAll(Collection c) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
-	public void clear() {
-		throw new UnsupportedOperationException();
-	}
+    public void clear() {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
-	public boolean retainAll(Collection c) {
-		throw new UnsupportedOperationException();
-	}
+    public boolean retainAll(Collection c) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
-	public boolean contains(Object o) {
-		return services.contains(o);
-	}
+    public boolean contains(Object o) {
+        return services.contains(o);
+    }
 
     @Override
-	public boolean containsAll(Collection c) {
-		return services.containsAll(c);
-	}
+    public boolean containsAll(Collection c) {
+        return services.containsAll(c);
+    }
 
     @Override
-	public boolean isEmpty() {
-		return size() == 0;
-	}
+    public boolean isEmpty() {
+        return size() == 0;
+    }
 
     @Override
-	public Object[] toArray() {
-		return services.toArray();
-	}
+    public Object[] toArray() {
+        return services.toArray();
+    }
 
-	@SuppressWarnings("SuspiciousToArrayCall")
+    @SuppressWarnings("SuspiciousToArrayCall")
     @Override
     public <T> T[] toArray(T[] array) {
-		return services.toArray(array);
-	}
+        return services.toArray(array);
+    }
 
     protected class ServiceInstanceListener implements ServiceListener {
         @Override
@@ -202,6 +202,7 @@ public class OsgiServiceCollection<E> implements Collection<E> {
                 case ServiceEvent.REGISTERED:
                 case ServiceEvent.MODIFIED:
                     synchronized (lock) {
+                        @SuppressWarnings("unchecked")
                         E service = (E) proxyCreator.createProxy(
                                 bundleContext, ref, new BundleDelegatingClassLoader(ref.getBundle(), fallbackClassLoader));
                         idToService.put(serviceID, service);
@@ -223,7 +224,7 @@ public class OsgiServiceCollection<E> implements Collection<E> {
             }
         }
     }
-    
+
     protected class OsgiServiceIterator implements Iterator<E> {
 
         private final Iterator<E> iter = services.iterator();

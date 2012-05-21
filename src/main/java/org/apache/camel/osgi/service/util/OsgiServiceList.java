@@ -31,63 +31,63 @@ import java.util.RandomAccess;
  */
 public class OsgiServiceList<E> extends OsgiServiceCollection<E> implements List<E>, RandomAccess {
 
-	public OsgiServiceList(BundleContext context, String filter, ClassLoader classLoader, OsgiProxyCreator proxyCreator) {
-		super(context, filter, classLoader, proxyCreator, new DynamicList<E>());
-	}
+    public OsgiServiceList(BundleContext context, String filter, ClassLoader classLoader, OsgiProxyCreator proxyCreator) {
+        super(context, filter, classLoader, proxyCreator, new DynamicList<E>());
+    }
 
     @Override
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public E get(int index) {
         return services.get(index);
-	}
+    }
 
     @Override
-	public int indexOf(Object o) {
+    public int indexOf(Object o) {
         return ((DynamicList<E>) services).indexOf(o);
-	}
+    }
 
     @Override
-	public int lastIndexOf(Object o) {
+    public int lastIndexOf(Object o) {
         return ((DynamicList<E>) services).lastIndexOf(o);
-	}
+    }
 
     @Override
-	public ListIterator<E> listIterator() {
-		return listIterator(0);
-	}
+    public ListIterator<E> listIterator() {
+        return listIterator(0);
+    }
 
     @Override
-	public ListIterator<E> listIterator(final int index) {
-		return new OsgiServiceListIterator(index);
-	}
+    public ListIterator<E> listIterator(final int index) {
+        return new OsgiServiceListIterator(index);
+    }
 
     // TODO: implement me (sublist must be backed by this list)
     @Override
-	public List<E> subList(int fromIndex, int toIndex) {
-		throw new UnsupportedOperationException();
-	}
+    public List<E> subList(int fromIndex, int toIndex) {
+        throw new UnsupportedOperationException();
+    }
 
     // mutators are forbidden
 
     @Override
-	public E remove(int index) {
-		throw new UnsupportedOperationException();
-	}
+    public E remove(int index) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
-	public E set(int index, Object o) {
-		throw new UnsupportedOperationException();
-	}
+    public E set(int index, Object o) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
-	public void add(int index, Object o) {
-		throw new UnsupportedOperationException();
-	}
+    public void add(int index, Object o) {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
-	public boolean addAll(int index, Collection c) {
-		throw new UnsupportedOperationException();
-	}
+    public boolean addAll(int index, Collection c) {
+        throw new UnsupportedOperationException();
+    }
 
     protected class OsgiServiceListIterator implements ListIterator<E> {
         private final ListIterator<E> iter;

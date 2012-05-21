@@ -37,6 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
 
+import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.editConfigurationFilePut;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.karafDistributionConfiguration;
 import static org.openengsb.labs.paxexam.karaf.options.KarafDistributionOption.logLevel;
 import static org.ops4j.pax.exam.CoreOptions.bundle;
@@ -165,16 +166,29 @@ public abstract class OsgiIntegrationTest {
                         .frameworkUrl(maven("org.apache.karaf", "apache-karaf").versionAsInProject().type("tar.gz"))
                         .karafVersion(MavenUtils.getArtifactVersion("org.apache.karaf", "apache-karaf")).name("Apache Karaf")
                         .unpackDirectory(new File("target/paxexam/unpack/")),
+
                     logLevel(LogLevelOption.LogLevel.ERROR),
 
+                    editConfigurationFilePut(
+                        "etc/org.ops4j.pax.url.mvn.cfg",
+                        "org.ops4j.pax.url.mvn.repositories",
+                        System.getProperty("project.features.repo.path")),
+
                     scanFeatures(
-                        maven("org.apache.karaf.assemblies.features", "standard").versionAsInProject().type("xml").classifier("features"),
+                        maven("org.apache.karaf.assemblies.features", "standard")
+                            .versionAsInProject()
+                            .type("xml")
+                            .classifier("features"),
                         "karaf-framework"),
                     scanFeatures(
-                        maven("org.apache.camel.karaf", "apache-camel").versionAsInProject().type("xml").classifier("features"),
+                        maven("org.apache.camel.karaf", "apache-camel")
+                            .versionAsInProject()
+                            .type("xml")
+                            .classifier("features"),
                         "camel-blueprint"),
 
-                    bundle("file:target/org.apache.camel.osgi.service-" + MavenUtils.getArtifactVersion("org.apache.camel", "org.apache.camel.osgi.service") + ".jar")
+                    bundle("file:target/org.apache.camel.osgi.service-"
+                        + MavenUtils.getArtifactVersion("org.apache.camel", "org.apache.camel.osgi.service") + ".jar")
                 };
             }
         };
