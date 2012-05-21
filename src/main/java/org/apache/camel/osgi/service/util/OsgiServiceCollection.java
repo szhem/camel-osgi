@@ -202,7 +202,7 @@ public class OsgiServiceCollection<E> implements Collection<E> {
                 case ServiceEvent.REGISTERED:
                 case ServiceEvent.MODIFIED:
                     synchronized (lock) {
-                        E service = proxyCreator.createProxy(
+                        E service = (E) proxyCreator.createProxy(
                                 bundleContext, ref, new BundleDelegatingClassLoader(ref.getBundle(), fallbackClassLoader));
                         idToService.put(serviceID, service);
                         services.add(service);
