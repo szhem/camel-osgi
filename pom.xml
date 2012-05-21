@@ -27,6 +27,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.features.repo.path>${project.build.directory}/features-repo</project.features.repo.path>
 
         <camel.version>2.9.2</camel.version>
         <cxf.version>2.5.2</cxf.version>
@@ -92,6 +93,32 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>features-maven-plugin</artifactId>
+                <version>${karaf.version}</version>
+                <executions>
+                    <execution>
+                        <id>add-features-to-repo</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>add-features-to-repo</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</descriptor>
+                            </descriptors>
+                            <features>
+                                <feature>camel-blueprint</feature>
+                            </features>
+                            <addTransitiveFeatures>true</addTransitiveFeatures>
+                            <failOnArtifactResolutionError>false</failOnArtifactResolutionError>
+                            <includeMvnBasedDescriptors>true</includeMvnBasedDescriptors>
+                            <repository>${project.features.repo.path}</repository>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.12</version>
@@ -123,9 +150,30 @@
                             <includes>
                                 <include>**/integration/**/*Test.java</include>
                             </includes>
+                            <argLine>-Dproject.features.repo.path=file:${project.features.repo.path}</argLine>
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.3.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8.1</version>
             </plugin>
         </plugins>
     </build>
@@ -182,16 +230,6 @@
         <!-- Unit Testing -->
 
         <!-- Integration Testing -->
-
-        <!-- Features -->
-        <dependency>
-            <groupId>org.apache.camel.karaf</groupId>
-            <artifactId>apache-camel</artifactId>
-            <version>${camel.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.apache.karaf.assemblies.features</groupId>
             <artifactId>standard</artifactId>
@@ -201,22 +239,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jclouds.karaf</groupId>
-            <artifactId>jclouds-karaf</artifactId>
-            <version>${jclouds-karaf.version}</version>
+            <groupId>org.apache.camel.karaf</groupId>
+            <artifactId>apache-camel</artifactId>
+            <version>${camel.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.cxf.karaf</groupId>
-            <artifactId>apache-cxf</artifactId>
-            <version>${cxf.version}</version>
-            <type>xml</type>
-            <classifier>features</classifier>
-            <scope>test</scope>
-        </dependency>
-        <!-- Features -->
 
         <dependency>
             <groupId>org.openengsb.labs.paxexam.karaf</groupId>
@@ -250,7 +279,14 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <!-- Integration tests -->
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-blueprint</artifactId>
+            <version>${camel.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Integration Testing -->
 
     </dependencies>
 
