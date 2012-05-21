@@ -54,7 +54,7 @@ public class OsgiDefaultProxyCreator implements OsgiProxyCreator {
                 }
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException(
-                        String.format("Unable to found class [%s] with classloader [%s]", className, classLoader));
+                        String.format("Unable to find class [%s] with classloader [%s]", className, classLoader));
             }
         }
         classes.add(OsgiProxy.class);
