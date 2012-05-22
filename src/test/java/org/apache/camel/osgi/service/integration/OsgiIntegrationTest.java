@@ -172,7 +172,7 @@ public abstract class OsgiIntegrationTest {
                     editConfigurationFilePut(
                         "etc/org.ops4j.pax.url.mvn.cfg",
                         "org.ops4j.pax.url.mvn.repositories",
-                        System.getProperty("project.features.repo.path")),
+                        System.getProperty("project.features.repo.path", "target/features-repo")),
 
                     scanFeatures(
                         maven("org.apache.karaf.assemblies.features", "standard")
