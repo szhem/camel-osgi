@@ -17,9 +17,6 @@ package org.apache.camel.osgi.service;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Component;
 import org.apache.camel.Processor;
-import org.apache.camel.osgi.service.OsgiDefaultConsumer;
-import org.apache.camel.osgi.service.OsgiDefaultEndpoint;
-import org.apache.camel.osgi.service.OsgiDefaultProducer;
 import org.apache.camel.osgi.service.util.BundleDelegatingClassLoader;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
@@ -42,17 +39,6 @@ public class OsgiDefaultEndpointTest {
 
         CamelContext camelContext = mock(CamelContext.class);
         when(camelContext.getApplicationContextClassLoader()).thenReturn(classLoader);
-
-        Component component = mock(Component.class);
-        when(component.getCamelContext()).thenReturn(camelContext);
-
-        new OsgiDefaultEndpoint("osgi:test", component);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testCreateClassLoaderNoGetBundle() throws Exception {
-        CamelContext camelContext = mock(CamelContext.class);
-        when(camelContext.getApplicationContextClassLoader()).thenReturn(getClass().getClassLoader());
 
         Component component = mock(Component.class);
         when(component.getCamelContext()).thenReturn(camelContext);
