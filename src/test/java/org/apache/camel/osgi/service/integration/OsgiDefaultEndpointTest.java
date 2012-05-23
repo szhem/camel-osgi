@@ -17,6 +17,7 @@ package org.apache.camel.osgi.service.integration;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
@@ -141,6 +142,35 @@ public class OsgiDefaultEndpointTest extends OsgiIntegrationTest {
         // remove new bundle
         bundle.uninstall();
         producerTemplate.sendBody("direct:start", "1234567890-3");
+
+        MockEndpoint.assertIsSatisfied(consumer1Context);
+        MockEndpoint.assertIsSatisfied(consumer2Context);
+    }
+
+    @Test
+    public void testStopBundle() throws Exception {
+        for(int i = 0; i < 8; i++) {
+            MockEndpoint finish = consumer1Context.getEndpoint("mock:finish" + i, MockEndpoint.class);
+            finish.expectedMessageCount(0);
+        }
+
+        MockEndpoint finish9 = consumer1Context.getEndpoint("mock:finish9", MockEndpoint.class);
+        finish9.expectedBodiesReceived("1234567890-2");
+
+        ProducerTemplate producerTemplate = producerContext.createProducerTemplate();
+
+        // add new bundle with a service that has highest ranking, so it has to receive the next sent message
+        Bundle bundle = installBundle();
+        bundle.start();
+
+        CamelContext consumer2Context = getOsgiService(CamelContext.class, "(camel.context.symbolicname=" + getClass().getName() + ".consumer2)");
+        MockEndpoint finish100 = consumer2Context.getEndpoint("mock:finish100", MockEndpoint.class);
+        finish100.expectedBodiesReceived("1234567890-1");
+        producerTemplate.sendBody("direct:start", "1234567890-1");
+
+        // stop new bundle
+        bundle.stop();
+        producerTemplate.sendBody("direct:start", "1234567890-2");
 
         MockEndpoint.assertIsSatisfied(consumer1Context);
         MockEndpoint.assertIsSatisfied(consumer2Context);
