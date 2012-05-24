@@ -19,8 +19,11 @@ import org.apache.camel.Consumer;
 import org.apache.camel.Processor;
 import org.apache.camel.Producer;
 import org.apache.camel.impl.DefaultEndpoint;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleReference;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
@@ -39,7 +42,30 @@ public class OsgiDefaultEndpoint extends DefaultEndpoint {
     public OsgiDefaultEndpoint(String endpointUri, Component component) {
         super(endpointUri, component);
         this.componentClassLoader = getClass().getClassLoader();
-        this.applicationBundleContext = Activator.BUNDLE_CONTEXT.get();
+
+        ClassLoader appClassLoader = component.getCamelContext().getApplicationContextClassLoader();
+
+        Bundle bundle;
+        // Note: we need to obtain BundleContext of the application, that uses this camel component, not the BundleContext
+        // of the component itself, because later the obtained BundleContext will be used to publish OSGi services, so
+        // publishing must be done on behalf of the application that uses the component
+        if(!(appClassLoader instanceof BundleReference)) {
+            // try to resolve classloader through reflection if BundleReference has already been wrapped in the custom classloader
+            // currently it works with spring-dm, aries, eclipse genimi, camel, etc.
+            try {
+                Method method = appClassLoader.getClass().getMethod("getBundle");
+                bundle = (Bundle) method.invoke(appClassLoader);
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new IllegalArgumentException(
+                        String.format("ClassLoader of CamelContext [%s] is not OSGi bundle aware", appClassLoader));
+            }
+        } else {
+            bundle = BundleReference.class.cast(appClassLoader).getBundle();
+        }
+
+        applicationBundleContext = bundle.getBundleContext();
     }
 
     @Override

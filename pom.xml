@@ -56,7 +56,6 @@
                         <Import-Package>
                             *
                         </Import-Package>
-                        <Bundle-Activator>org.apache.camel.osgi.service.Activator</Bundle-Activator>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                     </instructions>

@@ -46,6 +46,17 @@ public class OsgiDefaultEndpointTest {
         new OsgiDefaultEndpoint("osgi:test", component);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void testCreateClassLoaderNoGetBundle() throws Exception {
+        CamelContext camelContext = mock(CamelContext.class);
+        when(camelContext.getApplicationContextClassLoader()).thenReturn(getClass().getClassLoader());
+
+        Component component = mock(Component.class);
+        when(component.getCamelContext()).thenReturn(camelContext);
+
+        new OsgiDefaultEndpoint("osgi:test", component);
+    }
+
     @Test
     public void testCreateBundleRefIsClassLoader() throws Exception {
         Bundle bundle = mock(Bundle.class);
