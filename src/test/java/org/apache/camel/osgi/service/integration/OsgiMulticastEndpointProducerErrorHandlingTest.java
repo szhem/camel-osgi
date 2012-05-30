@@ -21,6 +21,7 @@ import org.apache.camel.Message;
 import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.junit.Test;
 import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.Configuration;
@@ -78,7 +79,7 @@ public class OsgiMulticastEndpointProducerErrorHandlingTest extends OsgiIntegrat
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
-                    .set(Constants.IMPORT_PACKAGE, "org.apache.camel.processor.aggregate")
+                    .set(Constants.IMPORT_PACKAGE, GroupedExchangeAggregationStrategy.class.getPackage().getName())
                     .removeHeader(Constants.EXPORT_PACKAGE)
                     .build()
             ),
