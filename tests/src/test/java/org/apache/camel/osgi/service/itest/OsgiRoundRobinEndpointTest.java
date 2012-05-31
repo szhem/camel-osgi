@@ -162,12 +162,6 @@ public class OsgiRoundRobinEndpointTest extends OsgiIntegrationTest {
             producerTemplate.sendBody("direct:start", "1234567890-3");
         }
 
-        for(int i = 0; i < endpointCount; i++) {
-            MockEndpoint finish = consumer1Context.getEndpoint("mock:finish" + i, MockEndpoint.class);
-            System.out.println("finish" + i + ": " + finish.getExchanges());
-        }
-        System.out.println("finish100: " + finish100.getExchanges());
-
         MockEndpoint.assertIsSatisfied(consumer1Context);
         MockEndpoint.assertIsSatisfied(consumer2Context);
     }
