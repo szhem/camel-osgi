@@ -44,7 +44,7 @@
                 <executions>
                     <execution>
                         <id>add-features-to-repo</id>
-                        <phase>integration-test</phase>
+                        <phase>generate-test-resources</phase>
                         <goals>
                             <goal>add-features-to-repo</goal>
                         </goals>
