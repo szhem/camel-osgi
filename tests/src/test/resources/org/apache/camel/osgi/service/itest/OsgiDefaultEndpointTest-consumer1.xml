@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<blueprint
+    xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+        http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+    ">
+
+    <camelContext xmlns="http://camel.apache.org/schema/blueprint">
+        <route id="route0">
+            <from uri="osgi:consumer?service.ranking=0" />
+            <to uri="mock:finish0" />
+        </route>
+        <route id="route1">
+            <from uri="osgi:consumer?service.ranking=1" />
+            <to uri="mock:finish1" />
+        </route>
+        <route id="route2">
+            <from uri="osgi:consumer?service.ranking=2" />
+            <to uri="mock:finish2" />
+        </route>
+        <route id="route3">
+            <from uri="osgi:consumer?service.ranking=3" />
+            <to uri="mock:finish3" />
+        </route>
+        <route id="route4">
+            <from uri="osgi:consumer?service.ranking=4" />
+            <to uri="mock:finish4" />
+        </route>
+        <route id="route5">
+            <from uri="osgi:consumer?service.ranking=5" />
+            <to uri="mock:finish5" />
+        </route>
+        <route id="route6">
+            <from uri="osgi:consumer?service.ranking=6" />
+            <to uri="mock:finish6" />
+        </route>
+        <route id="route7">
+            <from uri="osgi:consumer?service.ranking=7" />
+            <to uri="mock:finish7" />
+        </route>
+        <route id="route8">
+            <from uri="osgi:consumer?service.ranking=8" />
+            <to uri="mock:finish8" />
+        </route>
+        <route id="route9">
+            <from uri="osgi:consumer?service.ranking=9" />
+            <to uri="mock:finish9" />
+        </route>
+    </camelContext>
+
+</blueprint>
