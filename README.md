@@ -429,7 +429,7 @@ Any camel processor can be published into the OSGi service registry to process e
 The processor must be published with the **camelOsgiEndpointName** service property that is equal to the name
 of producing endpoint.
 
-For example, the name of the following endpoints **osgi:consumer**, **osgi:multicast:consumer**, **osgi:roudrobin:consumer**,
+For example, the name of the following endpoints **osgi:consumer**, **osgi:multicast:consumer**, **osgi:roundrobin:consumer**,
 **osgi:random:consumer** is considered to be **consumer**.
 
 **Bundle1** with a producer:
