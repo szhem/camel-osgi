@@ -30,7 +30,7 @@ endpoints that are located in different camel contexts in separate bundles.
 
 ### How to use?
 
-All the examples below are available as integration tests under the directory [tests](tests).
+All the examples below are available as integration tests under the directory [tests](camel-osgi/tree/master/tests).
 
 #### Endpoint parameters
 
