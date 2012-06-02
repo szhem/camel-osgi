@@ -2,6 +2,16 @@
 
 1. [What is it?](#what-is-it)
 2. [How to use?](#how-to-use)
+    1. [Endpoint parameters](#endpoint-parameters)
+        1. [Producer parameters](#producer-parameters)
+        2. [Consumer parameters](#consumer-parameters)
+    2. [Default way of communication between OSGi bundles](#default-way-of-communication-between-osgi-bundles)
+    3. [Multicasting to multiple OSGi bundles](#multicasting-to-multiple-osgi-bundles)
+    4. [Roundrobin load balancing between multiple OSGi bundles](#roundrobin-load-balancing-between-multiple-osgi-bundles)
+    5. [Random load balancing between multiple OSGi bundles](#random-load-balancing-between-multiple-osgi-bundles)
+    6. [Other ways to use the component](#other-ways-to-use-the-component)
+        1. [Using multiple producers to publish exchanges to one or multiple consumers](#using-multiple-producers-to-publish-exchanges-to-one-or-multiple-consumers)
+        2. [Using any camel processor to process exchanges](#using-any-camel-processor-to-process-exchanges)
 3. [License](#license)
 
 ### What is it?
@@ -95,7 +105,7 @@ In order to use such a communication define the route like the following one in 
 
 In the consuming bundles define the routes like this:
 
-Bundle1:
+**Bundle1**:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <blueprint
@@ -113,7 +123,7 @@ Bundle1:
         </camelContext>
     </blueprint>
 
-Bundle2:
+**Bundle2**:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <blueprint
@@ -174,7 +184,7 @@ In order to use such a communication define the route like the following one in 
 
 In the consuming bundles define the routes like this:
 
-Bundle1:
+**Bundle1**:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <blueprint
@@ -192,7 +202,7 @@ Bundle1:
         </camelContext>
     </blueprint>
 
-Bundle2:
+**Bundle2**:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <blueprint
@@ -237,7 +247,7 @@ In order to use such a communication define the route like the following one in 
 
 In the consuming bundles define the routes like this:
 
-Bundle1:
+**Bundle1**:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <blueprint
@@ -255,7 +265,7 @@ Bundle1:
         </camelContext>
     </blueprint>
 
-Bundle2:
+**Bundle2**:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <blueprint
@@ -300,7 +310,7 @@ In order to use such a communication define the route like the following one in 
 
 In the consuming bundles define the routes like this:
 
-Bundle1:
+**Bundle1**:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <blueprint
@@ -318,7 +328,7 @@ Bundle1:
         </camelContext>
     </blueprint>
 
-Bundle2:
+**Bundle2**:
 
     <?xml version="1.0" encoding="UTF-8"?>
     <blueprint
@@ -337,6 +347,150 @@ Bundle2:
     </blueprint>
 
 In this case the exchange will be delivered to endpoints in all bundles in random fashion.
+
+#### Other ways to use the component
+
+As the component uses OSGi services to communicate between producer and consumer, following features are available:
+
+1. [Multiple producers can send an exchange to one or multiple consumers](#using-multiple-producers-to-publish-exchanges-to-one-or-multiple-consumers),
+2. [Any camel processor (even not within a route) can be used as consumer](#using-any-camel-processor-to-process-exchanges)
+
+##### Using multiple producers to publish exchanges to one or multiple consumers
+
+To use the following feature just deploy multiple OSGi bundles with producing endpoints and one or multiple OSGi bundles
+that will consume published exchanges.
+
+Note that bundles with producers can use any of the following ways to publish the exchanges:
+[default](#default-way-of-communication-between-osgi-bundles),
+[multicast](#multicasting-to-multiple-osgi-bundles),
+[roundrobin](#roundrobin-load-balancing-between-multiple-osgi-bundles),
+[random](#random-load-balancing-between-multiple-osgi-bundles).
+
+**Bundle1** with the first producer:
+
+    <blueprint
+        xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+            http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+        ">
+        <camelContext xmlns="http://camel.apache.org/schema/blueprint">
+            <route>
+                <from uri="direct:start" />
+                <to uri="osgi:multicast:consumer" />
+            </route>
+        </camelContext>
+    </blueprint>
+
+**Bundle2** with another producer:
+
+    <blueprint
+        xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+            http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+        ">
+        <camelContext xmlns="http://camel.apache.org/schema/blueprint">
+            <route>
+                <from uri="direct:start" />
+                <to uri="osgi:consumer" />
+            </route>
+        </camelContext>
+    </blueprint>
+
+**Bundle3** with that consumes exchanges:
+
+    <blueprint
+        xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+            http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+        ">
+        <camelContext xmlns="http://camel.apache.org/schema/blueprint">
+            <route>
+                <from uri="osgi:consumer" />
+                <to uri="mock:finish" />
+            </route>
+        </camelContext>
+    </blueprint>
+
+That's all. Now exchanges produced by **Bundle1** will be sent to all the consumers and exchanges produced by **Bundle2**
+will be send to the consumer with the highest ranking.
+
+##### Using any camel processor to process exchanges
+
+Any camel processor can be published into the OSGi service registry to process exchanges.
+
+The processor must be published with the **camelOsgiEndpointName** service property that is equal to the name
+of produsing endpoint.
+
+The name of the following endpoints **osgi:consumer**, **osgi:multicast:consumer**, **osgi:roudrobin:consumer**,
+**osgi:random:consumer** is considered to be **consumer**.
+
+**Bundle1** with a producer:
+
+    <blueprint
+        xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+            http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+        ">
+        <camelContext xmlns="http://camel.apache.org/schema/blueprint">
+            <route>
+                <from uri="direct:start" />
+                <to uri="osgi:multicast:consumer?aggregationStrategy=#aggregationStrategy" />
+            </route>
+        </camelContext>
+        <bean id="aggregationStrategy" class="org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy" />
+    </blueprint>
+
+**Bundle2** with a camel route that consumes exchanges:
+
+    <blueprint
+        xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+            http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+        ">
+        <camelContext xmlns="http://camel.apache.org/schema/blueprint">
+            <route id="consumer1">
+                <from uri="osgi:consumer" />
+                <to uri="mock:finish" />
+            </route>
+        </camelContext>
+    </blueprint>
+
+**Bundle3** with ordinary camel processor published into the OSGi service registry:
+
+    <blueprint
+        xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+        ">
+        <service auto-export="interfaces">
+            <service-properties>
+                <entry key="camelOsgiEndpointName" value="consumer" />
+            </service-properties>
+            <bean class="org.apache.camel.osgi.service.itest.OsgiMulticastSimpleProcessorTestProcessor"/>
+        </service>
+    </blueprint>
+
+And here is the source of the published processor:
+
+    public class OsgiMulticastSimpleProcessorTestProcessor implements Processor {
+        @Override
+        public void process(Exchange exchange) throws Exception {
+            Message in = exchange.getIn();
+            in.setBody(in.getBody() + "-reply");
+        }
+    }
+
 
 ### License
 
