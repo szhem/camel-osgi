@@ -354,7 +354,7 @@ In this case the exchange will be delivered to endpoints in all bundles in rando
 
 As the component uses OSGi services to communicate between producer and consumer, following features are available:
 
-1. [Multiple producers can send an exchange to one or multiple consumers](#using-multiple-producers-to-publish-exchanges-to-one-or-multiple-consumers),
+1. [Multiple producers can send an exchange to one or multiple consumers](#using-multiple-producers-to-publish-exchanges-to-one-or-multiple-consumers)
 2. [Any camel processor (even not within a route) can be used as consumer](#using-any-camel-processor-to-process-exchanges)
 
 #### Using multiple producers to publish exchanges to one or multiple consumers
