@@ -355,7 +355,7 @@ As the component uses OSGi services to communicate between producer and consumer
 1. [Multiple producers can send an exchange to one or multiple consumers](#using-multiple-producers-to-publish-exchanges-to-one-or-multiple-consumers),
 2. [Any camel processor (even not within a route) can be used as consumer](#using-any-camel-processor-to-process-exchanges)
 
-##### Using multiple producers to publish exchanges to one or multiple consumers
+#### Using multiple producers to publish exchanges to one or multiple consumers
 
 To use the following feature just deploy multiple OSGi bundles with producing endpoints and one or multiple OSGi bundles
 that will consume published exchanges.
@@ -420,7 +420,7 @@ Note that bundles with producers can use any of the following ways to publish th
 That's all. Now exchanges produced by **Bundle1** will be sent to all the consumers and exchanges produced by **Bundle2**
 will be send to the consumer with the highest ranking.
 
-##### Using any camel processor to process exchanges
+#### Using any camel processor to process exchanges
 
 Any camel processor can be published into the OSGi service registry to process exchanges.
 
