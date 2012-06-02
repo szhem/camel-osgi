@@ -30,6 +30,8 @@ endpoints that are located in different camel contexts in separate bundles.
 
 ### How to use?
 
+All the examples below are available as integration tests under the directory [tests](tests).
+
 #### Endpoint parameters
 
 ##### Producer parameters
@@ -360,7 +362,7 @@ As the component uses OSGi services to communicate between producer and consumer
 To use the following feature just deploy multiple OSGi bundles with producing endpoints and one or multiple OSGi bundles
 that will consume published exchanges.
 
-Note that bundles with producers can use any of the following ways to publish the exchanges:
+Note that the bundles with the producers can use any of the following ways to publish the exchanges:
 [default](#default-way-of-communication-between-osgi-bundles),
 [multicast](#multicasting-to-multiple-osgi-bundles),
 [roundrobin](#roundrobin-load-balancing-between-multiple-osgi-bundles),
@@ -400,7 +402,7 @@ Note that bundles with producers can use any of the following ways to publish th
         </camelContext>
     </blueprint>
 
-**Bundle3** with that consumes exchanges:
+**Bundle3** that will consume exchanges:
 
     <blueprint
         xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
@@ -418,16 +420,16 @@ Note that bundles with producers can use any of the following ways to publish th
     </blueprint>
 
 That's all. Now exchanges produced by **Bundle1** will be sent to all the consumers and exchanges produced by **Bundle2**
-will be send to the consumer with the highest ranking.
+will be sent to the consumer with the highest ranking.
 
 #### Using any camel processor to process exchanges
 
 Any camel processor can be published into the OSGi service registry to process exchanges.
 
 The processor must be published with the **camelOsgiEndpointName** service property that is equal to the name
-of produsing endpoint.
+of producing endpoint.
 
-The name of the following endpoints **osgi:consumer**, **osgi:multicast:consumer**, **osgi:roudrobin:consumer**,
+For example, the name of the following endpoints **osgi:consumer**, **osgi:multicast:consumer**, **osgi:roudrobin:consumer**,
 **osgi:random:consumer** is considered to be **consumer**.
 
 **Bundle1** with a producer:
