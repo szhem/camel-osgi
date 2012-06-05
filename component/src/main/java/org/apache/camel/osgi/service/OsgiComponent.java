@@ -52,7 +52,7 @@ public class OsgiComponent extends DefaultComponent {
 
         setProperties(endpoint, params);
 
-        // properties that cannot be set on endpoint are exposed as published OSGi service
+        // properties that cannot be set on endpoint are exposed as properties of a published OSGi service
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(Constants.OBJECTCLASS, OBJECT_CLASS);
         props.put(SERVICE_NAME_PROP, endpointType.getName(path));
