@@ -22,6 +22,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The {@code OsgiDefaultLoadBalancer} is the load balancer that always selects most actual OSGi service, i.e. with
+ * the highest ranking.
+ * <p/>
+ * As a rule processors to select from must implement {@link org.osgi.framework.ServiceReference} to work as expected.
+ */
 public class OsgiDefaultLoadBalancer extends QueueLoadBalancer {
 
     @Override

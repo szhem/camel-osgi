@@ -20,6 +20,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 
+/**
+ * The {@code BundleDelegatingClassLoader} is the {@code ClassLoader} that delegates all class and resource loading
+ * calls to the specified bundle or to the specified {@code ClassLoader} as fallback if the requested class or resource
+ * cannot be loaded by the bundle.
+ */
 public class BundleDelegatingClassLoader extends ClassLoader {
     private final Bundle bundle;
     private final ClassLoader classLoader;

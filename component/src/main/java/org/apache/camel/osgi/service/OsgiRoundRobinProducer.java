@@ -20,6 +20,10 @@ import org.apache.camel.processor.loadbalancer.RoundRobinLoadBalancer;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The {@code OsgiRoundRobinProducer} is the producer that uses {@link RoundRobinLoadBalancer} to send exchanges to OSGi
+ * consumers.
+ */
 public class OsgiRoundRobinProducer extends OsgiDefaultProducer {
 
     public OsgiRoundRobinProducer(OsgiDefaultEndpoint endpoint, Map<String, Object> props) {

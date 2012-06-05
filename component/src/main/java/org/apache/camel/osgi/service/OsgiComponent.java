@@ -25,6 +25,14 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * The {@code OsgiComponent} is the camel component that provides different types of communication between endpoints
+ * which are provided by different OSGi bundles.
+ * <p/>
+ * The types of supported endpoints can be found in {@link OsgiEndpointType}.
+ *
+ * @see OsgiEndpointType
+ */
 public class OsgiComponent extends DefaultComponent {
 
     /**

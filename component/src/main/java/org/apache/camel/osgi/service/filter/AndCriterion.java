@@ -20,6 +20,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The {@code AndCriterion} is the criterion that represents conjunction of all the specified criterions.
+ */
 public class AndCriterion extends AbstractCriterion {
 
     private List<Criterion> criterions = Collections.emptyList();

@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * The {@code Filters} provides a simple DSL to create OSGi filters.
+ */
 public final class Filters {
 
     private Filters() {

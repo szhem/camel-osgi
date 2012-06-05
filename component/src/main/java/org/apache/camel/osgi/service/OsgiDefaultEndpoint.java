@@ -27,6 +27,11 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
 
+/**
+ * The {@code OsgiDefaultEndpoint} is the endpoint type that provides point-to-point style of communication between
+ * OSGi bundles selecting most actual consuming OSGi service, according to the specification, i.e. with the highest
+ * ranking.
+ */
 public class OsgiDefaultEndpoint extends DefaultEndpoint {
 
     private final BundleContext applicationBundleContext;

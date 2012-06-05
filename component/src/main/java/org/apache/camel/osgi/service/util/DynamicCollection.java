@@ -23,6 +23,12 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
 
+/**
+ * The {@code DynamicCollection} is implementation of {@link Collection} that allows iterators to see additions and
+ * removals of elements while iterating.
+ * <p/>
+ * This collection and its iterators are thread safe but all operations happen under a synchronization lock.
+ */
 public class DynamicCollection<E> extends AbstractCollection<E> {
 
     protected final Object lock = new Object();

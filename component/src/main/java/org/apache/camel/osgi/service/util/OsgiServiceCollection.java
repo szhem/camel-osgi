@@ -26,6 +26,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * The {@code OsgiServiceCollection} is OSGi service dynamic collection that allows iterating while the
+ * underlying storage is being shrunk/expanded. This collection is read-only as its content is being retrieved
+ * dynamically from the OSGi platform.
+ * <p/>
+ * This collection and its iterators are thread-safe. That is, multiple threads can access the collection. However,
+ * since the collection is read-only, it cannot be modified by the client.
+ * <p/>
+ * {@link #startTracking()} method must be called prior to track for the OSGi services. {@link #stopTracking}
+ * method must be called to release all the associated resources.
+ */
 public class OsgiServiceCollection<E> implements Collection<E> {
 
     protected final DynamicCollection<E> services;

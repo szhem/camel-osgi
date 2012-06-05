@@ -29,6 +29,17 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * The {@code OsgiDefaultConsumer} is the default consumer for the camel OSGi component.
+ * <p/>
+ * It's responsible for publishing an appropriate OSGi service that will be available for different types of OSGi
+ * producers.
+ *
+ * @see OsgiDefaultProducer
+ * @see OsgiRandomProducer
+ * @see OsgiRoundRobinProducer
+ * @see OsgiMulticastProducer
+ */
 public class OsgiDefaultConsumer extends ServiceSupport implements Consumer, SuspendableService, Processor {
 
     private ServiceRegistration registration;

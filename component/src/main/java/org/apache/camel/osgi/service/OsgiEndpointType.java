@@ -17,6 +17,9 @@ package org.apache.camel.osgi.service;
 import org.apache.camel.Component;
 import org.apache.camel.Endpoint;
 
+/**
+ * The {@code OsgiEndpointType} is a factory that creates different types of camel endpoints.
+ */
 public enum OsgiEndpointType {
     
     DEFAULT("default:") {

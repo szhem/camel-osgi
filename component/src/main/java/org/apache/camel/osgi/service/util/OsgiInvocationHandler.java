@@ -20,6 +20,10 @@ import org.osgi.framework.ServiceReference;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 
+/**
+ * The {@link OsgiInvocationHandler} is an instance of {@link InvocationHandler} that is responsible to handle calls
+ * to the original OSGi service.
+ */
 public class OsgiInvocationHandler implements InvocationHandler {
 
     private BundleContext bundleContext;

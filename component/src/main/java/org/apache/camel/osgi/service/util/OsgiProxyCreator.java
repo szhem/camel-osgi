@@ -17,6 +17,10 @@ package org.apache.camel.osgi.service.util;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
+/**
+ * The {@code OsgiProxyCreator} is the interface that must be implemented by classes that are able to create
+ * {@link OsgiProxy OSGi proxies} for OSGi services dynamically.
+ */
 public interface OsgiProxyCreator {
 
     /**

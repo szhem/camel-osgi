@@ -16,6 +16,9 @@ package org.apache.camel.osgi.service.filter;
 
 import org.osgi.framework.Filter;
 
+/**
+ * The {@code Criterion} represent OSGi filter criterion.
+ */
 public interface Criterion {
 
     /**

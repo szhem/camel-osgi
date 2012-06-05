@@ -23,6 +23,10 @@ import org.apache.camel.spi.ExecutorServiceManager;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+/**
+ * The {@code OsgiMulticastProducer} is the producer that uses {@link MulticastProcessor} to send exchanges to OSGi
+ * consumers.
+ */
 public class OsgiMulticastProducer extends OsgiDefaultProducer {
 
     private final AggregationStrategy aggregationStrategy;

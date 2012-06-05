@@ -22,6 +22,10 @@ import org.apache.camel.processor.aggregate.AggregationStrategy;
 
 import java.util.concurrent.ExecutorService;
 
+/**
+ * The {@code OsgiMulticastEndpoint} is the endpoint that uses creates {@link OsgiMulticastProducer} in order to send
+ * exchanges to OSGi consumers by means of {@link org.apache.camel.processor.MulticastProcessor}.
+ */
 public class OsgiMulticastEndpoint extends OsgiDefaultEndpoint {
 
     private AggregationStrategy aggregationStrategy;

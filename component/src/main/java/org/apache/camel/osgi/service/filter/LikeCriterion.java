@@ -14,6 +14,12 @@
 
 package org.apache.camel.osgi.service.filter;
 
+/**
+ * The {@code LikeCriterion} is the criterion that represents wildcarded match of the specified attribute to the
+ * specified value.
+ * <p/>
+ * Type of the match is defined by means of {@link MatchMode}. By default {@link MatchMode#EXACT} is used.
+ */
 public class LikeCriterion extends AbstractCriterion {
 
     /**

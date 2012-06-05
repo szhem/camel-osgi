@@ -26,6 +26,14 @@ import org.osgi.framework.BundleContext;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The {@code OsgiDefaultProducer} is responsible for sending exchanges to registered consumers.
+ * <p/>
+ * Sending to consumer policy is determined by the corresponding {@link #processor} which at the moment can be one of
+ * {@link OsgiDefaultLoadBalancer}, {@link org.apache.camel.processor.loadbalancer.RandomLoadBalancer},
+ * {@link org.apache.camel.processor.loadbalancer.RoundRobinLoadBalancer},
+ * {@link org.apache.camel.processor.MulticastProcessor}.
+ */
 public class OsgiDefaultProducer extends DefaultProducer {
 
     /**
