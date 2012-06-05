@@ -30,7 +30,8 @@ public interface OsgiProxyCreator {
      * The returned object implements {@link ServiceReference} and {@link OsgiProxy} interfaces to easily access the
      * functionality of the original instance of {@link ServiceReference}.
      *
-     * @param bundleContext an instance of {@link BundleContext} to get the service associated with the provided reference.
+     * @param bundleContext an instance of {@link BundleContext} to get the service associated with the provided
+     * reference.
      * @param reference a reference to the service to lookup
      * @param classLoader the {@link ClassLoader} to be used to load interfaces that are implemented by the exported
      * OSGi service to be implemented dynamically
@@ -39,8 +40,8 @@ public interface OsgiProxyCreator {
      *
      * @return dynamic proxy for an exported OSGi service
      *
-     * @throws IllegalArgumentException if the provided service reference is invalid or some of the interfaces implemented
-     * by the original service cannot be loaded
+     * @throws IllegalArgumentException if the provided service reference is invalid or some of the interfaces
+     * implemented by the original service cannot be loaded
      */
     <T> T createProxy(BundleContext bundleContext, ServiceReference reference, ClassLoader classLoader);
     

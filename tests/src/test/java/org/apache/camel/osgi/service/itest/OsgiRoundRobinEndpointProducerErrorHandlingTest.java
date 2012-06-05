@@ -55,7 +55,8 @@ public class OsgiRoundRobinEndpointProducerErrorHandlingTest extends OsgiIntegra
 
             provision(
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-consumer.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -63,7 +64,8 @@ public class OsgiRoundRobinEndpointProducerErrorHandlingTest extends OsgiIntegra
                     .removeHeader(Constants.EXPORT_PACKAGE)
                     .build(),
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-producer.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-producer.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")

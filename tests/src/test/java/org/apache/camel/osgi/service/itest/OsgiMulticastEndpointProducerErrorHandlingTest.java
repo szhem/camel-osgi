@@ -59,7 +59,8 @@ public class OsgiMulticastEndpointProducerErrorHandlingTest extends OsgiIntegrat
 
             provision(
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer1.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-consumer1.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer1")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer1")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -67,7 +68,8 @@ public class OsgiMulticastEndpointProducerErrorHandlingTest extends OsgiIntegrat
                     .removeHeader(Constants.EXPORT_PACKAGE)
                     .build(),
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer2.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-consumer2.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer2")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer2")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -75,7 +77,8 @@ public class OsgiMulticastEndpointProducerErrorHandlingTest extends OsgiIntegrat
                     .removeHeader(Constants.EXPORT_PACKAGE)
                     .build(),
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-producer.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-producer.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")

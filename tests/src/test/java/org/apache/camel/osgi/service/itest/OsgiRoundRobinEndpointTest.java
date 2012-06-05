@@ -56,7 +56,8 @@ public class OsgiRoundRobinEndpointTest extends OsgiIntegrationTest {
 
             provision(
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer1.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-consumer1.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer1")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer1")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -64,7 +65,8 @@ public class OsgiRoundRobinEndpointTest extends OsgiIntegrationTest {
                     .removeHeader(Constants.EXPORT_PACKAGE)
                     .build(),
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-producer.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-producer.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -148,7 +150,8 @@ public class OsgiRoundRobinEndpointTest extends OsgiIntegrationTest {
         Bundle bundle = installBundle();
         bundle.start();
 
-        CamelContext consumer2Context = getOsgiService(CamelContext.class, "(camel.context.symbolicname=" + getClass().getName() + ".consumer2)");
+        CamelContext consumer2Context = getOsgiService(CamelContext.class,
+            "(camel.context.symbolicname=" + getClass().getName() + ".consumer2)");
         MockEndpoint finish100 = consumer2Context.getEndpoint("mock:finish100", MockEndpoint.class);
         finish100.expectedBodiesReceived("1234567890-2");
 
@@ -168,7 +171,8 @@ public class OsgiRoundRobinEndpointTest extends OsgiIntegrationTest {
 
     private Bundle installBundle() throws BundleException {
         TinyBundle tinyBundle = bundle()
-            .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer2.xml"))
+            .add("OSGI-INF/blueprint/camel-context.xml",
+                getClass().getResource(getClass().getSimpleName() + "-consumer2.xml"))
             .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer2")
             .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer2")
             .set(Constants.BUNDLE_VERSION, "1.0.0")

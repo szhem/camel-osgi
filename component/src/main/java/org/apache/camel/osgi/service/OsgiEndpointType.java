@@ -26,8 +26,8 @@ public enum OsgiEndpointType {
         /**
          * Gets name of the endpoint from its path.
          * <p/>
-         * If path starts with {@literal "default:"} than the {@link OsgiEndpointType#getName(String) default behavior} is
-         * applied, else the path will be returned.
+         * If path starts with {@literal "default:"} than the {@link OsgiEndpointType#getName(String) default behavior}
+         * is applied, else the path will be returned.
          *
          * @param path the path of the camel endpoint, i.e. {@literal "default:test"} for {@literal "osgi:default:test"}
          *
@@ -117,7 +117,8 @@ public enum OsgiEndpointType {
      *
      * @param path the path of the camel endpoint, i.e. {@code "default:test"} for {@code "osgi:default:test"}
      *
-     * @return {@link #DEFAULT} endpoint type by default or for the path that starts with {@literal "default:"} prefix,<br/>
+     * @return {@link #DEFAULT} endpoint type by default or for the path that starts with {@literal "default:"}
+     * prefix,<br/>
      * {@link #MULTICAST} endpoint type if path starts with {@literal "multicast:"} prefix,<br/>
      * {@link #ROUNDROBIN} endpoint type if path starts with {@literal "roundrobin:"} prefix,<br/>
      * {@link #RANDOM} endpoint type if path starts with {@literal "random:"} prefix

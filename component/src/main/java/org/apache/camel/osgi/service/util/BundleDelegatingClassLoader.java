@@ -71,10 +71,12 @@ public class BundleDelegatingClassLoader extends ClassLoader {
                 try {
                     clazz = classLoader.loadClass(name);
                 } catch (ClassNotFoundException e) {
-                    throw new ClassNotFoundException(name + " from bundle " + bundle.getBundleId() + " (" + bundle.getSymbolicName() + ")", cnfe);
+                    throw new ClassNotFoundException(String.format("[%s] from bundle [%s] (%s)",
+                        name, bundle.getBundleId(), bundle.getSymbolicName()));
                 }
             } else {
-                throw new ClassNotFoundException(name + " from bundle " + bundle.getBundleId() + " (" + bundle.getSymbolicName() + ")", cnfe);
+                throw new ClassNotFoundException(String.format("[%s] from bundle [%s] (%s)",
+                    name, bundle.getBundleId(), bundle.getSymbolicName()));
             }
         }
         if (resolve) {

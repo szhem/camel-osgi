@@ -87,7 +87,7 @@ public class OsgiDefaultConsumer extends ServiceSupport implements Consumer, Sus
     protected void register() {
         if(this.registration == null) {
             this.registration = getApplicationBundleContext().registerService(
-                    OsgiComponent.OBJECT_CLASS, this, new Hashtable<String, Object>(props));
+                OsgiComponent.OBJECT_CLASS, this, new Hashtable<String, Object>(props));
         }
     }
 
@@ -109,8 +109,9 @@ public class OsgiDefaultConsumer extends ServiceSupport implements Consumer, Sus
     }
 
     /**
-     * Creates exchange copy, so that {@link org.apache.camel.Exchange#getContext()} will return the {@code CamelContext}
-     * of the this consumer endpoint instead of the producer endpoint, that sent the provided exchange.
+     * Creates exchange copy, so that {@link org.apache.camel.Exchange#getContext()} will return the
+     * {@code CamelContext} of the this consumer endpoint instead of the producer endpoint, that sent the provided
+     * exchange.
      *
      * @param exchange an exchange to copy
      *

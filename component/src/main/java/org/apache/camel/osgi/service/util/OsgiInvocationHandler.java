@@ -85,7 +85,8 @@ public class OsgiInvocationHandler implements InvocationHandler {
 
         Object service = bundleContext.getService(reference);
         if(service == null) {
-            throw new IllegalStateException(String.format("There is no service registered for reference [%s]", reference));
+            throw new IllegalStateException(
+                String.format("There is no service registered for reference [%s]", reference));
         }
 
         try {
@@ -96,7 +97,8 @@ public class OsgiInvocationHandler implements InvocationHandler {
     }
 
     /**
-     * Returns a {@link BundleContext} instance to get the service associated with the specified {@link ServiceReference}.
+     * Returns a {@link BundleContext} instance to get the service associated with the specified
+     * {@link ServiceReference}.
      *
      * @return a {@link BundleContext} instance
      */

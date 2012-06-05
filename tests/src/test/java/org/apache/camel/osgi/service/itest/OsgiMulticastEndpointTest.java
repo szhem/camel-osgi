@@ -62,7 +62,8 @@ public class OsgiMulticastEndpointTest extends OsgiIntegrationTest {
 
             provision(
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer1.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-consumer1.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer1")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer1")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -70,7 +71,8 @@ public class OsgiMulticastEndpointTest extends OsgiIntegrationTest {
                     .removeHeader(Constants.EXPORT_PACKAGE)
                     .build(),
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer2.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-consumer2.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer2")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer2")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -78,7 +80,8 @@ public class OsgiMulticastEndpointTest extends OsgiIntegrationTest {
                     .removeHeader(Constants.EXPORT_PACKAGE)
                     .build(),
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-producer.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-producer.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -196,7 +199,8 @@ public class OsgiMulticastEndpointTest extends OsgiIntegrationTest {
         Bundle bundle = installBundle();
         bundle.start();
 
-        CamelContext consumer3Context = getOsgiService(CamelContext.class, "(camel.context.symbolicname=" + getClass().getName() + ".consumer3)");
+        CamelContext consumer3Context = getOsgiService(CamelContext.class,
+            "(camel.context.symbolicname=" + getClass().getName() + ".consumer3)");
         MockEndpoint consumer3 = consumer3Context.getEndpoint("mock:finish", MockEndpoint.class);
         consumer3.expectedBodiesReceived("1234567890-2");
         consumer3.whenAnyExchangeReceived(new Processor() {
@@ -219,7 +223,8 @@ public class OsgiMulticastEndpointTest extends OsgiIntegrationTest {
 
     private Bundle installBundle() throws BundleException {
         TinyBundle tinyBundle = bundle()
-            .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer3.xml"))
+            .add("OSGI-INF/blueprint/camel-context.xml",
+                getClass().getResource(getClass().getSimpleName() + "-consumer3.xml"))
             .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer3")
             .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer3")
             .set(Constants.BUNDLE_VERSION, "1.0.0")

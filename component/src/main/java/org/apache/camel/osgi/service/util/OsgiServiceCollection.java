@@ -113,7 +113,8 @@ public class OsgiServiceCollection<E> implements Collection<E> {
 
         synchronized (lock) {
             for (E service : services) {
-                listener.serviceChanged(new ServiceEvent(ServiceEvent.UNREGISTERING, ((OsgiProxy) service).getReference()));
+                listener.serviceChanged(
+                    new ServiceEvent(ServiceEvent.UNREGISTERING, ((OsgiProxy) service).getReference()));
             }
         }
     }
@@ -204,7 +205,7 @@ public class OsgiServiceCollection<E> implements Collection<E> {
                     synchronized (lock) {
                         @SuppressWarnings("unchecked")
                         E service = (E) proxyCreator.createProxy(
-                                bundleContext, ref, new BundleDelegatingClassLoader(ref.getBundle(), fallbackClassLoader));
+                            bundleContext, ref, new BundleDelegatingClassLoader(ref.getBundle(), fallbackClassLoader));
                         idToService.put(serviceID, service);
                         services.add(service);
                     }
@@ -220,7 +221,7 @@ public class OsgiServiceCollection<E> implements Collection<E> {
                     }
                     break;
                 default:
-                    throw new IllegalArgumentException("unsupported event type: " + event);
+                    throw new IllegalArgumentException(String.format("Unsupported event type: [%s]", event));
             }
         }
     }

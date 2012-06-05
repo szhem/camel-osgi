@@ -54,7 +54,8 @@ public class OsgiRandomEndpointTest extends OsgiIntegrationTest {
 
             provision(
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer1.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-consumer1.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer1")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer1")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -62,7 +63,8 @@ public class OsgiRandomEndpointTest extends OsgiIntegrationTest {
                     .removeHeader(Constants.EXPORT_PACKAGE)
                     .build(),
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-producer.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-producer.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".producer")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -157,7 +159,8 @@ public class OsgiRandomEndpointTest extends OsgiIntegrationTest {
         Bundle bundle = installBundle();
         bundle.start();
 
-        CamelContext consumer2Context = getOsgiService(CamelContext.class, "(camel.context.symbolicname=" + getClass().getName() + ".consumer2)");
+        CamelContext consumer2Context = getOsgiService(CamelContext.class,
+            "(camel.context.symbolicname=" + getClass().getName() + ".consumer2)");
         MockEndpoint finish3 = consumer2Context.getEndpoint("mock:finish0", MockEndpoint.class);
         MockEndpoint finish4 = consumer2Context.getEndpoint("mock:finish1", MockEndpoint.class);
 
@@ -193,7 +196,8 @@ public class OsgiRandomEndpointTest extends OsgiIntegrationTest {
 
     private Bundle installBundle() throws BundleException {
         TinyBundle tinyBundle = bundle()
-            .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer2.xml"))
+            .add("OSGI-INF/blueprint/camel-context.xml",
+                getClass().getResource(getClass().getSimpleName() + "-consumer2.xml"))
             .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer2")
             .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer2")
             .set(Constants.BUNDLE_VERSION, "1.0.0")

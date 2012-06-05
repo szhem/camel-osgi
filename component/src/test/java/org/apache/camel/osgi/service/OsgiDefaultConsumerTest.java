@@ -66,7 +66,7 @@ public class OsgiDefaultConsumerTest {
 
         verify(processor).start();
         verify(bundleContext)
-                .registerService(eq(OsgiComponent.OBJECT_CLASS), same(consumer), eq(new Hashtable<String, Object>(props)));
+            .registerService(eq(OsgiComponent.OBJECT_CLASS), same(consumer), eq(new Hashtable<String, Object>(props)));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class OsgiDefaultConsumerTest {
 
         verify(processor).start();
         verify(bundleContext)
-                .registerService(eq(OsgiComponent.OBJECT_CLASS), same(consumer), eq(new Hashtable<String, Object>(props)));
+            .registerService(eq(OsgiComponent.OBJECT_CLASS), same(consumer), eq(new Hashtable<String, Object>(props)));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class OsgiDefaultConsumerTest {
 
         BundleContext bundleContext = mock(BundleContext.class);
         when(bundleContext.registerService(eq(OsgiComponent.OBJECT_CLASS), anyObject(), any(Dictionary.class)))
-                .thenReturn(registration);
+            .thenReturn(registration);
 
         OsgiDefaultEndpoint endpoint = mock(OsgiDefaultEndpoint.class);
         when(endpoint.getApplicationBundleContext()).thenReturn(bundleContext);
@@ -103,7 +103,7 @@ public class OsgiDefaultConsumerTest {
         Service processor = mock(Service.class, withSettings().extraInterfaces(Processor.class));
 
         OsgiDefaultConsumer consumer = new OsgiDefaultConsumer(
-                endpoint, (Processor) processor, Collections.<String, Object>emptyMap());
+            endpoint, (Processor) processor, Collections.<String, Object>emptyMap());
         ServiceHelper.startService(consumer);
         ServiceHelper.stopService(consumer);
 
@@ -117,7 +117,7 @@ public class OsgiDefaultConsumerTest {
 
         BundleContext bundleContext = mock(BundleContext.class);
         when(bundleContext.registerService(eq(OsgiComponent.OBJECT_CLASS), anyObject(), any(Dictionary.class)))
-                .thenReturn(registration);
+            .thenReturn(registration);
 
         OsgiDefaultEndpoint endpoint = mock(OsgiDefaultEndpoint.class);
         when(endpoint.getApplicationBundleContext()).thenReturn(bundleContext);
@@ -125,7 +125,7 @@ public class OsgiDefaultConsumerTest {
         Service processor = mock(Service.class, withSettings().extraInterfaces(Processor.class));
 
         OsgiDefaultConsumer consumer = new OsgiDefaultConsumer(
-                endpoint, (Processor) processor, Collections.<String, Object>emptyMap());
+            endpoint, (Processor) processor, Collections.<String, Object>emptyMap());
         ServiceHelper.startService(consumer);
         ServiceHelper.stopService(consumer);
         ServiceHelper.stopService(consumer);
@@ -151,7 +151,7 @@ public class OsgiDefaultConsumerTest {
 
         verify(processor).start();
         verify(bundleContext, times(2))
-                .registerService(eq(OsgiComponent.OBJECT_CLASS), same(consumer), eq(new Hashtable<String, Object>(props)));
+            .registerService(eq(OsgiComponent.OBJECT_CLASS), same(consumer), eq(new Hashtable<String, Object>(props)));
     }
 
     @Test
@@ -160,7 +160,7 @@ public class OsgiDefaultConsumerTest {
 
         BundleContext bundleContext = mock(BundleContext.class);
         when(bundleContext.registerService(eq(OsgiComponent.OBJECT_CLASS), anyObject(), any(Dictionary.class)))
-                .thenReturn(registration);
+            .thenReturn(registration);
 
         OsgiDefaultEndpoint endpoint = mock(OsgiDefaultEndpoint.class);
         when(endpoint.getApplicationBundleContext()).thenReturn(bundleContext);
@@ -168,7 +168,7 @@ public class OsgiDefaultConsumerTest {
         Service processor = mock(Service.class, withSettings().extraInterfaces(Processor.class));
 
         OsgiDefaultConsumer consumer = new OsgiDefaultConsumer(
-                endpoint, (Processor) processor, Collections.<String, Object>emptyMap());
+            endpoint, (Processor) processor, Collections.<String, Object>emptyMap());
         ServiceHelper.startService(consumer);
         ServiceHelper.suspendService(consumer);
         ServiceHelper.resumeService(consumer);

@@ -31,9 +31,8 @@ public class OsgiRandomEndpoint extends OsgiDefaultEndpoint {
 
     @Override
     public Consumer createConsumer(Processor processor) throws Exception {
-        throw new UnsupportedOperationException(
-                String.format("[%s] does not support consumers. Use [%s] instead.",
-                        getClass().getName(), getClass().getSuperclass().getName()));
+        throw new UnsupportedOperationException(String.format("[%s] does not support consumers. Use [%s] instead.",
+            getClass().getName(), getClass().getSuperclass().getName()));
     }
 
     @Override

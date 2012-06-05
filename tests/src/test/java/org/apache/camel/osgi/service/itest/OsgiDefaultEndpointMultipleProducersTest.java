@@ -60,7 +60,8 @@ public class OsgiDefaultEndpointMultipleProducersTest extends OsgiIntegrationTes
 
             provision(
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-consumer.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-consumer.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".consumer")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".consumer")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -68,7 +69,8 @@ public class OsgiDefaultEndpointMultipleProducersTest extends OsgiIntegrationTes
                     .removeHeader(Constants.EXPORT_PACKAGE)
                     .build(),
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-producer1.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-producer1.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".producer1")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".producer1")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -76,7 +78,8 @@ public class OsgiDefaultEndpointMultipleProducersTest extends OsgiIntegrationTes
                     .removeHeader(Constants.EXPORT_PACKAGE)
                     .build(),
                 bundle()
-                    .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-producer2.xml"))
+                    .add("OSGI-INF/blueprint/camel-context.xml",
+                        getClass().getResource(getClass().getSimpleName() + "-producer2.xml"))
                     .set(Constants.BUNDLE_NAME, getClass().getName() + ".producer2")
                     .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".producer2")
                     .set(Constants.BUNDLE_VERSION, "1.0.0")
@@ -137,7 +140,8 @@ public class OsgiDefaultEndpointMultipleProducersTest extends OsgiIntegrationTes
         Bundle bundle = installBundle();
         bundle.start();
 
-        CamelContext producer3Context = getOsgiService(CamelContext.class, "(camel.context.symbolicname=" + getClass().getName() + ".producer3)");
+        CamelContext producer3Context = getOsgiService(CamelContext.class,
+            "(camel.context.symbolicname=" + getClass().getName() + ".producer3)");
         MockEndpoint producer3Finish = producer3Context.getEndpoint("mock:finish", MockEndpoint.class);
         producer3Finish.expectedBodiesReceived("1234567890-3-reply");
         producer3Context.createProducerTemplate().sendBody("direct:start", "1234567890-3");
@@ -152,7 +156,8 @@ public class OsgiDefaultEndpointMultipleProducersTest extends OsgiIntegrationTes
 
     private Bundle installBundle() throws BundleException {
         TinyBundle tinyBundle = bundle()
-            .add("OSGI-INF/blueprint/camel-context.xml", getClass().getResource(getClass().getSimpleName() + "-producer3.xml"))
+            .add("OSGI-INF/blueprint/camel-context.xml",
+                getClass().getResource(getClass().getSimpleName() + "-producer3.xml"))
             .set(Constants.BUNDLE_NAME, getClass().getName() + ".producer3")
             .set(Constants.BUNDLE_SYMBOLICNAME, getClass().getName() + ".producer3")
             .set(Constants.BUNDLE_VERSION, "1.0.0")

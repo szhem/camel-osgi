@@ -46,12 +46,12 @@ public class OsgiDefaultEndpoint extends DefaultEndpoint {
         ClassLoader appClassLoader = component.getCamelContext().getApplicationContextClassLoader();
 
         Bundle bundle;
-        // Note: we need to obtain BundleContext of the application, that uses this camel component, not the BundleContext
-        // of the component itself, because later the obtained BundleContext will be used to publish OSGi services, so
-        // publishing must be done on behalf of the application that uses the component
+        // Note: we need to obtain BundleContext of the application, that uses this camel component, not the
+        // BundleContext of the component itself, because later the obtained BundleContext will be used to publish
+        // OSGi services, so publishing must be done on behalf of the application that uses the component
         if(!(appClassLoader instanceof BundleReference)) {
-            // try to resolve classloader through reflection if BundleReference has already been wrapped in the custom classloader
-            // currently it works with spring-dm, aries, eclipse genimi, camel, etc.
+            // try to resolve classloader through reflection if BundleReference has already been wrapped in the custom
+            // classloader currently it works with spring-dm, aries, eclipse genimi, camel, etc.
             try {
                 Method method = appClassLoader.getClass().getMethod("getBundle");
                 bundle = (Bundle) method.invoke(appClassLoader);

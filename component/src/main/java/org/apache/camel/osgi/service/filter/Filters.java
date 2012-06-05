@@ -225,14 +225,16 @@ public final class Filters {
     }
 
     /**
-     * Creates the criterion that represents that uses {@link org.apache.camel.osgi.service.filter.LikeCriterion.MatchMode#EXACT}
-     * to match the specified attribute to the specified value.
+     * Creates the criterion that represents that uses
+     * {@link org.apache.camel.osgi.service.filter.LikeCriterion.MatchMode#EXACT} to match the specified attribute to
+     * the specified value.
      *
      * @param attr the name of attribute
      * @param val the value to check the attribute against
      *
-     * @return the criterion that represents that uses {@link org.apache.camel.osgi.service.filter.LikeCriterion.MatchMode#EXACT}
-     * to match the specified attribute to the specified value
+     * @return the criterion that represents that uses
+     * {@link org.apache.camel.osgi.service.filter.LikeCriterion.MatchMode#EXACT} to match the specified attribute to
+     * the specified value
      */
     public static Criterion like(String attr, Object val) {
         return new LikeCriterion(attr, val);
