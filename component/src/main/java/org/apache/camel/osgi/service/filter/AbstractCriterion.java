@@ -19,7 +19,7 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 
 /**
- * The {@code AbstractCriterion} implements commons functionality for all the OSGi {@link Criterion criterion}
+ * The {@code AbstractCriterion} implements common functionality for all the OSGi {@link Criterion criterion}
  * implementations.
  */
 public abstract class AbstractCriterion implements Criterion {
