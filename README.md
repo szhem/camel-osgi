@@ -152,15 +152,16 @@ communication.
 
 **Predefined consumer parameters**
 
-| Name                | Default | Description  |
-| ------------------- | ------- | ------------ |
-| aggregationStrategy |         | Refers to an [AggregationStrategy](http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/aggregate/AggregationStrategy.html) to be used to assemble the replies from the consumers, into a single outgoing message. By default the last reply is used as the outgoing message. |
-| parallelProcessing  | false   | If enables then sending messages to the multicasts occurs concurrently. Note the caller thread will still wait until all messages has been fully processed, before it continues. Its only the sending and processing the replies from the multicasts which happens concurrently. |
-| executorService     |         | Refers to a custom [Thread Pool](http://camel.apache.org/threading-model.html) to be used for parallel processing. Notice if you set this option, then parallel processing is automatic implied, and you do not have to enable that option as well. |
-| streaming           | false   | If enabled then Camel will process replies out-of-order, i.e. in the order they come back. If disabled, Camel will process replies in the same order as multicasted. |
-| stopOnException     | false   | Whether or not to stop continue processing immediately when an exception occurred. If disable, then Camel will send the message to all multicasts regardless if one of them failed. You can deal with exceptions in the [AggregationStrategy](http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/aggregate/AggregationStrategy.html) class where you have full control how to handle that. |
-| timeout             |         | Sets a total timeout specified in millis. If the Multicast hasn't been able to send and process all replies within the given timeframe, then the timeout triggers and the Multicast breaks out and continues. |
-| onPrepare           |         | Refers to a custom [Processor](http://camel.apache.org/processor.html) to prepare the copy of the [Exchange](http://camel.apache.org/exchange.html) each multicast will receive. This allows you to do any custom logic, such as deep-cloning the message payload if that's needed etc. |
+| Name                    | Default | Description  |
+| ------------------------| ------- | ------------ |
+| aggregationStrategy     |         | Refers to an [AggregationStrategy](http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/aggregate/AggregationStrategy.html) to be used to assemble the replies from the consumers, into a single outgoing message. By default the last reply is used as the outgoing message. |
+| parallelProcessing      | false   | If enables then sending messages to the multicasts occurs concurrently. Note the caller thread will still wait until all messages has been fully processed, before it continues. Its only the sending and processing the replies from the multicasts which happens concurrently. |
+| executorService         |         | Refers to a custom [Thread Pool](http://camel.apache.org/threading-model.html) to be used for parallel processing. Notice if you set this option, then parallel processing is automatic implied, and you do not have to enable that option as well. |
+| shutdownExecutorService | false   | Whether to shutdown the explicitly specified executor service when shutting down the endpoint. If executor service is default, i.e. it's has not been specified by means of `executorService` parameter but `parallelProcessit` is `true` the executor service will be shutted down any way. |
+| streaming               | false   | If enabled then Camel will process replies out-of-order, i.e. in the order they come back. If disabled, Camel will process replies in the same order as multicasted. |
+| stopOnException         | false   | Whether or not to stop continue processing immediately when an exception occurred. If disable, then Camel will send the message to all multicasts regardless if one of them failed. You can deal with exceptions in the [AggregationStrategy](http://camel.apache.org/maven/current/camel-core/apidocs/org/apache/camel/processor/aggregate/AggregationStrategy.html) class where you have full control how to handle that. |
+| timeout                 |         | Sets a total timeout specified in millis. If the Multicast hasn't been able to send and process all replies within the given timeframe, then the timeout triggers and the Multicast breaks out and continues. |
+| onPrepare               |         | Refers to a custom [Processor](http://camel.apache.org/processor.html) to prepare the copy of the [Exchange](http://camel.apache.org/exchange.html) each multicast will receive. This allows you to do any custom logic, such as deep-cloning the message payload if that's needed etc. |
 
 Note, that these parameters will not be exported into the OSGi service registry as part of the consuming endpoint
 publishing, but all the other parameters will be.
