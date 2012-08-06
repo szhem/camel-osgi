@@ -32,6 +32,7 @@ public class OsgiMulticastProducer extends OsgiDefaultProducer {
     private final AggregationStrategy aggregationStrategy;
     private final boolean parallelProcessing;
     private final ExecutorService executorService;
+    private final boolean shutdownExecutorService;
     private final boolean streaming;
     private final boolean stopOnException;
     private final long timeout;
@@ -41,11 +42,13 @@ public class OsgiMulticastProducer extends OsgiDefaultProducer {
 
     public OsgiMulticastProducer(OsgiDefaultEndpoint endpoint, Map<String, Object> props,
         AggregationStrategy aggregationStrategy, boolean parallelProcessing, ExecutorService executorService,
-        boolean streaming, boolean stopOnException, long timeout, Processor onPrepare) {
+        boolean shutdownExecutorService, boolean streaming, boolean stopOnException, long timeout,
+        Processor onPrepare) {
 
         super(endpoint, props);
         this.aggregationStrategy = aggregationStrategy;
         this.parallelProcessing = parallelProcessing;
+        this.shutdownExecutorService = shutdownExecutorService;
         this.streaming = streaming;
         this.stopOnException = stopOnException;
         this.timeout = timeout;
@@ -63,7 +66,8 @@ public class OsgiMulticastProducer extends OsgiDefaultProducer {
     @Override
     protected Processor createProcessor() {
         return new MulticastProcessor(getEndpoint().getCamelContext(), services, aggregationStrategy,
-            parallelProcessing, executorService, streaming, stopOnException, timeout, onPrepare, false);
+            parallelProcessing, executorService, shutdownExecutorService, streaming, stopOnException,
+            timeout, onPrepare, false);
     }
 
     @Override

@@ -31,6 +31,7 @@ public class OsgiMulticastEndpoint extends OsgiDefaultEndpoint {
     private AggregationStrategy aggregationStrategy;
     private boolean parallelProcessing;
     private ExecutorService executorService;
+    private boolean shutdownExecutorService;
     private boolean streaming;
     private boolean stopOnException;
     private long timeout;
@@ -50,8 +51,8 @@ public class OsgiMulticastEndpoint extends OsgiDefaultEndpoint {
     @Override
     public Producer createProducer() throws Exception {
         return new OsgiMulticastProducer(
-                this, getProps(), getAggregationStrategy(), isParallelProcessing(), getExecutorService(), isStreaming(),
-                isStopOnException(), getTimeout(), getOnPrepare());
+                this, getProps(), getAggregationStrategy(), isParallelProcessing(), getExecutorService(),
+                isShutdownExecutorService(), isStreaming(), isStopOnException(), getTimeout(), getOnPrepare());
     }
 
     public AggregationStrategy getAggregationStrategy() {
@@ -76,6 +77,14 @@ public class OsgiMulticastEndpoint extends OsgiDefaultEndpoint {
 
     public void setExecutorService(ExecutorService executorService) {
         this.executorService = executorService;
+    }
+
+    public boolean isShutdownExecutorService() {
+        return shutdownExecutorService;
+    }
+
+    public void setShutdownExecutorService(boolean shutdownExecutorService) {
+        this.shutdownExecutorService = shutdownExecutorService;
     }
 
     public boolean isStreaming() {

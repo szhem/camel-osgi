@@ -43,7 +43,7 @@ public class OsgiMulticastProducerTest {
         when(endpoint.getCamelContext()).thenReturn(camelContext);
 
         OsgiMulticastProducer producer = new OsgiMulticastProducer(
-            endpoint, Collections.<String, Object>emptyMap(), null, false, null, false, false, 1, null);
+            endpoint, Collections.<String, Object>emptyMap(), null, false, null, false, false, false, 1, null);
 
         assertThat(producer.getAggregationStrategy(), nullValue());
         assertThat(producer.isParallelProcessing(), equalTo(false));
@@ -64,7 +64,7 @@ public class OsgiMulticastProducerTest {
         ExecutorService executor = mock(ExecutorService.class);
 
         OsgiMulticastProducer producer = new OsgiMulticastProducer(
-            endpoint, Collections.<String, Object>emptyMap(), null, true, executor, false, false, 1, null);
+            endpoint, Collections.<String, Object>emptyMap(), null, true, executor, false, false, false, 1, null);
 
         assertThat(producer.getAggregationStrategy(), nullValue());
         assertThat(producer.isParallelProcessing(), equalTo(true));
@@ -89,7 +89,7 @@ public class OsgiMulticastProducerTest {
         when(endpoint.getCamelContext()).thenReturn(camelContext);
 
         OsgiMulticastProducer producer = new OsgiMulticastProducer(
-            endpoint, Collections.<String, Object>emptyMap(), null, true, null, false, false, 1, null);
+            endpoint, Collections.<String, Object>emptyMap(), null, true, null, false, false, false, 1, null);
 
         assertThat(producer.getAggregationStrategy(), nullValue());
         assertThat(producer.isParallelProcessing(), equalTo(true));
@@ -114,7 +114,7 @@ public class OsgiMulticastProducerTest {
         when(endpoint.getCamelContext()).thenReturn(camelContext);
 
         OsgiMulticastProducer producer = new OsgiMulticastProducer(
-            endpoint, Collections.<String, Object>emptyMap(), null, true, null, true, true, 1, null);
+            endpoint, Collections.<String, Object>emptyMap(), null, true, null, false, true, true, 1, null);
 
         MulticastProcessor processor = (MulticastProcessor) producer.createProcessor();
         assertThat(processor.getAggregationStrategy(), nullValue());
@@ -138,7 +138,7 @@ public class OsgiMulticastProducerTest {
         when(executorManager.newDefaultThreadPool(anyObject(), anyString())).thenReturn(executor);
 
         OsgiMulticastProducer producer = new OsgiMulticastProducer(
-            endpoint, Collections.<String, Object>emptyMap(), null, true, null, false, false, 0, null);
+            endpoint, Collections.<String, Object>emptyMap(), null, true, null, false, false, false, 0, null);
 
         producer.doShutdown();
 

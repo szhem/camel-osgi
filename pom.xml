@@ -35,17 +35,19 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <camel.version>2.9.2</camel.version>
-        <cxf.version>2.5.2</cxf.version>
-        <jclouds-karaf.version>1.3.1</jclouds-karaf.version>
+        <camel.version>2.10.0</camel.version>
+        <cxf.version>2.6.1</cxf.version>
+        <jansi.version>1.9</jansi.version>
+        <jclouds-karaf.version>1.4.0</jclouds-karaf.version>
+        <jline.version>2.7</jline.version>
         <junit.version>4.10</junit.version>
-        <karaf.version>2.2.7</karaf.version>
-        <mockito.version>1.9.0</mockito.version>
+        <karaf.version>2.2.8</karaf.version>
+        <mockito.version>1.9.5-rc1</mockito.version>
         <osgi.core.version>4.2.0</osgi.core.version>
         <paxexam-junit4.version>2.3.1</paxexam-junit4.version>
         <paxexam-karaf.version>0.5.3</paxexam-karaf.version>
         <pojosr.version>0.1.8</pojosr.version>
-        <slf4j.version>1.6.1</slf4j.version>
+        <slf4j.version>1.6.4</slf4j.version>
         <tinybundles.version>1.0.0</tinybundles.version>
     </properties>
 
@@ -127,6 +129,17 @@
                 <groupId>org.openengsb.labs.paxexam.karaf</groupId>
                 <artifactId>paxexam-karaf-container</artifactId>
                 <version>${paxexam-karaf.version}</version>
+            </dependency>
+            <!-- camel karaf commands requirement -->
+            <dependency>
+                <groupId>jline</groupId>
+                <artifactId>jline</artifactId>
+                <version>${jline.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.fusesource.jansi</groupId>
+                <artifactId>jansi</artifactId>
+                <version>${jansi.version}</version>
             </dependency>
 
             <!-- Feature Repos -->

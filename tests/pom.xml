@@ -100,6 +100,17 @@
             <artifactId>tinybundles</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- camel karaf commands requirement -->
+        <dependency>
+            <groupId>jline</groupId>
+            <artifactId>jline</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!-- Feature Repos -->
         <dependency>

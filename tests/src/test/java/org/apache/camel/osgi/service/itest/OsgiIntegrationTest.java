@@ -175,6 +175,9 @@ public abstract class OsgiIntegrationTest {
                         "org.ops4j.pax.url.mvn.repositories",
                         System.getProperty("project.features.repo.path", "target/features-repo")),
 
+                    mavenBundle("jline", "jline").versionAsInProject(),
+                    mavenBundle("org.fusesource.jansi", "jansi").versionAsInProject(),
+
                     scanFeatures(
                         maven("org.apache.karaf.assemblies.features", "standard")
                             .versionAsInProject()
