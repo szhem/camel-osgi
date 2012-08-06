@@ -213,17 +213,14 @@ public class OsgiDefaultConsumerTest {
 
         Exchange exchange = mock(Exchange.class, RETURNS_MOCKS);
         when(exchange.getPattern()).thenReturn(ExchangePattern.OutOptionalIn);
-        when(exchange.getExchangeId()).thenReturn("12345");
 
         Exchange copy = consumer.copyExchange(exchange);
 
         verify(exchange, atLeastOnce()).getPattern();
-        verify(exchange, atLeastOnce()).getExchangeId();
         verify(exchange, atLeastOnce()).getIn();
         verify(exchange, atLeastOnce()).getException();
 
         assertThat(copy.getPattern(), sameInstance(ExchangePattern.OutOptionalIn));
-        assertThat(copy.getProperty(Exchange.CORRELATION_ID, String.class), equalTo("12345"));
     }
 
 }

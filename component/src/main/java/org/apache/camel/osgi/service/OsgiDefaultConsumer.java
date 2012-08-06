@@ -18,7 +18,6 @@ import org.apache.camel.Consumer;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.SuspendableService;
-import org.apache.camel.impl.DefaultExchange;
 import org.apache.camel.support.ServiceSupport;
 import org.apache.camel.util.ExchangeHelper;
 import org.apache.camel.util.ServiceHelper;
@@ -27,7 +26,6 @@ import org.osgi.framework.ServiceRegistration;
 
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * The {@code OsgiDefaultConsumer} is the default consumer for the camel OSGi component.
@@ -120,18 +118,8 @@ public class OsgiDefaultConsumer extends ServiceSupport implements Consumer, Sus
     protected Exchange copyExchange(Exchange exchange) {
         OsgiDefaultEndpoint endpoint = getEndpoint();
 
-        DefaultExchange copy = new DefaultExchange(endpoint.getCamelContext(), exchange.getPattern());
+        Exchange copy = ExchangeHelper.copyExchangeAndSetCamelContext(exchange, endpoint.getCamelContext(), false);
         copy.setFromEndpoint(endpoint);
-        copy.setProperty(Exchange.CORRELATION_ID, exchange.getExchangeId());
-
-        if (exchange.hasProperties()) {
-            copy.setProperties(new ConcurrentHashMap<String, Object>(exchange.getProperties()));
-        }
-        copy.getIn().copyFrom(exchange.getIn());
-        if (exchange.hasOut()) {
-            copy.getOut().copyFrom(exchange.getOut());
-        }
-        copy.setException(exchange.getException());
         return copy;
     }
 
